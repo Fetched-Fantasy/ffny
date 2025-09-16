@@ -48,121 +48,126 @@
             height: 100%;
             margin: 0;
             font-family: Arial, sans-serif;
-            color: rgb(0, 0, 0);
-            line-height: 1.6;
+            color: white;
+line-height: 1.6;
         }
 
-        .parallax {
-            position: relative; /* Needed for pseudo-element positioning */
-            height: 100%;
-            overflow: hidden; /* Hide any content that overflows */
-        }
+.parallax {
+position: relative;
+height: 100%;
+overflow: hidden;
+}
 
-        .parallax::before {
-            content: "";
+.parallax::before {
+content: "";
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url("https://raw.githubusercontent.com/Fetched-Fantasy/ffny/refs/heads/main/Copilot_20250903_093151.png");
-            background-attachment: fixed;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            filter: blur(5px); /* Apply blur to the background */
-            z-index: -1; /* Place the background behind the content */
+width: 100%;
+height: 100%;
+background-image: url("https://raw.githubusercontent.com/Fetched-Fantasy/ffny/refs/heads/main/Copilot_20250903_093151.png");
+background-attachment: fixed;
+background-position: center;
+background-repeat: no-repeat;
+background-size: cover;
+filter: blur(5px);
+z-index: -1;
         }
 
-        .header {
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 20px;
+.header {
+background-color: rgba(0, 0, 0, 0.5);
+padding: 20px;
             text-align: center;
-            position: relative; /* For positioning the arrows */
-        }
-
-        .nav-container {
-            overflow: hidden; /* Hide overflowing links */
-            position: relative; /* Needed for absolute positioning of arrows */
-width: 50%; /* Limit the container width to center content */
-margin: 0 auto; /* Center the container horizontally */
-        }
-
-        .nav {
-            margin-top: 10px;
-            display: flex; /* Arrange links horizontally */
-            transition: transform 0.3s ease-in-out; /* Smooth transition */
-            padding: 0;
-            list-style: none; /* Remove bullet points */
-            width: max-content; /* Make nav wide enough to contain all items */
 position: relative;
-left: 50%; /* initial position for centering */
-transform: translateX(-50%); /* adjust for the width of the content */
         }
+
+.nav-container {
+overflow: hidden;
+position: relative;
+width: 100px; /* width of one item */
+margin: 0 auto;
+display: flex;
+justify-content: center;
+        }
+
+.nav {
+margin-top: 10px;
+display: flex;
+transition: transform 0.3s ease-in-out;
+padding: 0;
+list-style: none;
+width: max-content;
+position: relative;
+left: 0; /* initial position */
+transform: translateX(0px);
+}
 
         .nav a {
             color: white;
             text-decoration: none;
-            padding: 10px;
-            white-space: nowrap; /* Prevent links from wrapping */
-            display: block;
+padding: 10px;
+white-space: nowrap;
+display: block;
         }
 
-        .nav-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            z-index: 10; /* Ensure arrows are on top */
+.nav-arrow {
+position: absolute;
+top: 50%;
+transform: translateY(-50%);
+background: rgba(0, 0, 0, 0.5);
+color: white;
+border: none;
+padding: 10px;
+cursor: pointer;
+z-index: 10;
         }
 
-        .nav-arrow.left {
-            left: 0;
+.nav-arrow.left {
+left: 0;
         }
 
-        .nav-arrow.right {
-            right: 0;
-        }
+.nav-arrow.right {
+right: 0;
+}
 
-        .about-me {
-            padding: 50px;
-            background-color: rgba(0, 0, 0, 0.7);
-            text-align: center;
-        }
+.about-me {
+padding: 50px;
+background-color: rgba(0, 0, 0, 0.7);
+text-align: center;
+}
 
-        .button-container {
-            margin-top: 20px;
-        }
-        .discord-link,
-        .vrchat-link {
-            display: inline-block;
-            padding: 10px 20px;
-            margin: 0 10px;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
+.button-container {
+margin-top: 20px;
+}
 
-        .discord-link {
-            background-color: #7289DA;
-        }
+.discord-link,
+.vrchat-link {
+display: inline-block;
+padding: 10px 20px;
+margin: 0 10px;
+color: white;
+text-decoration: none;
+border-radius: 5px;
+}
 
-        .vrchat-link {
-            background-color: #4693FF;
-        }
+.discord-link {
+background-color: #7289DA;
+}
+
+.vrchat-link {
+background-color: #4693FF;
+}
     </style>
 </head>
-<body>
 
+<body>
     <div class="parallax">
         <div class="header">
             <h1>Fetched Fantasy</h1>
             <div class="nav-container">
-                <button class="nav-arrow left" onclick="scrollNav(-1)">&#9664;</button>
+<button class="nav-arrow left" onclick="scrollNav(-1)" disabled>
+&#9664;
+</button>
                 <ul class="nav">
                     <li><a href="">Home</a></li>
                     <li><a href="">About</a></li>
@@ -175,7 +180,6 @@ transform: translateX(-50%); /* adjust for the width of the content */
                 <button class="nav-arrow right" onclick="scrollNav(1)">&#9654;</button>
             </div>
         </div>
-
         <div class="about-me">
             <h2>About Me</h2>
             <p>Welcome to Fetched Fantasy! We are a virtual group that hosts events/instances within VRChat. Our focus is to host worlds with the safety of users in mind. You can join our discord below and our vrchat too!</p>
@@ -185,30 +189,34 @@ transform: translateX(-50%); /* adjust for the width of the content */
             </div>
         </div>
     </div>
-
     <script>
-        function scrollNav(direction) {
             const nav = document.querySelector('.nav');
-            const container = document.querySelector('.nav-container');
-const navItems = nav.querySelectorAll('a'); // Select all nav links
-const scrollAmount = navItems[0].offsetWidth; // Width of one link
+const navItems = document.querySelectorAll('.nav li');
+const leftArrow = document.querySelector('.nav-arrow.left');
+const rightArrow = document.querySelector('.nav-arrow.right');
+const itemWidth = 100;
+let currentPosition = 0;
+let currentItem = 0;
+
+
+function updateButtons() {
+leftArrow.disabled = currentItem === 0;
+rightArrow.disabled = currentItem === navItems.length - 1;
+}
+
+function scrollNav(direction) {
             if (direction === 1) {
-nav.scrollLeft += scrollAmount;
+currentItem = Math.min(currentItem + 1, navItems.length - 1);
             } else {
-nav.scrollLeft -= scrollAmount;
+currentItem = Math.max(currentItem - 1, 0);
             }
 
-// Optional: Add logic to disable arrows when reaching the end
-// For example:
-// const leftArrow = document.querySelector('.nav-arrow.left');
-// const rightArrow = document.querySelector('.nav-arrow.right');
-// if (nav.scrollLeft <= 0) {
-// leftArrow.disabled = true;
-// } else {
-// leftArrow.disabled = false;
-// }
-        }
-    </script>
+currentPosition = -currentItem * itemWidth;
+nav.style.transform = `translateX(${currentPosition}px)`;
+updateButtons();
+}
 
+updateButtons();
+    </script>
 </body>
 </html>
