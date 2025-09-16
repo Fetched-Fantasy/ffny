@@ -8,15 +8,12 @@
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Fetched Fantasy">
     <meta property="og:description" content="Fetched Fantasy is a virtual group in a game called VRChat that hosts events/instances for people to have a good time in.">
-    <meta property="og:image" content="https://github.com/Fetched-Fantasy/ffny/blob/main/Copilot_20250903_093151.png"> <!-- Replace with your image -->
-    <meta property="og:url" content="https://fetched-fantasy.github.io/ffny/"> <!-- Replace with your URL -->
+    <meta property="og:image" content="https://github.com/Fetched-Fantasy/ffny/blob/main/Copilot_20250903_093151.png">
+    <meta property="og:url" content="https://fetched-fantasy.github.io/ffny/">
     <meta property="og:type" content="website">
-
     <!-- Favicon -->
     <link rel="icon" href="https://github.com/Fetched-Fantasy/ffny/blob/main/Copilot_20250903_093151.png" type="image/x-icon">
-
     <title>Fetched Fantasy</title>
-
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -56,13 +53,8 @@
         }
 
         .parallax {
-            /* The image used */
-            background-image: url("https://github.com/Fetched-Fantasy/ffny/blob/main/Copilot_20250903_093151.png"); /* Replace with your image */
-
-            /* Set a specific height */
+            background-image: url("https://github.com/Fetched-Fantasy/ffny/blob/main/Copilot_20250903_093151.png");
             height: 100%;
-
-            /* Create the parallax scrolling effect */
             background-attachment: fixed;
             background-position: center;
             background-repeat: no-repeat;
@@ -73,16 +65,46 @@
             background-color: rgba(0, 0, 0, 0.5);
             padding: 20px;
             text-align: center;
+            position: relative; /* For positioning the arrows */
+        }
+
+        .nav-container {
+            overflow: hidden; /* Hide overflowing links */
         }
 
         .nav {
             margin-top: 10px;
+            display: flex; /* Arrange links horizontally */
+            transition: transform 0.5s ease-in-out; /* Smooth transition */
+            padding: 0;
+            list-style: none; /* Remove bullet points */
         }
 
         .nav a {
             color: white;
             text-decoration: none;
             padding: 10px;
+            white-space: nowrap; /* Prevent links from wrapping */
+            display: block;
+        }
+
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .nav-arrow.left {
+            left: 0;
+        }
+
+        .nav-arrow.right {
+            right: 0;
         }
 
         .about-me {
@@ -90,14 +112,15 @@
             background-color: rgba(0, 0, 0, 0.7);
             text-align: center;
         }
-        .button-container { /* Added container for buttons */
+
+        .button-container {
             margin-top: 20px;
         }
 
-        .discord-link, .vrchat-link { /* Added vrchat-link class */
+        .discord-link, .vrchat-link {
             display: inline-block;
             padding: 10px 20px;
-            margin: 0 10px; /* Added spacing between buttons */
+            margin: 0 10px;
             color: white;
             text-decoration: none;
             border-radius: 5px;
@@ -107,8 +130,8 @@
             background-color: #7289DA;
         }
 
-        .vrchat-link { /* Style for VRChat button */
-            background-color: #4693FF; /* Example VRChat color */
+        .vrchat-link {
+            background-color: #4693FF;
         }
     </style>
 </head>
@@ -117,11 +140,15 @@
     <div class="parallax">
         <div class="header">
             <h1>Fetched Fantasy</h1>
-            <div class="nav">
-                <a href="#">Home</a>
-                <a href="#">About</a>
-                <a href="#">Services</a>
-                <a href="#">Contact</a>
+            <div class="nav-container">
+                <button class="nav-arrow left" onclick="scrollNav(-1)">&#9664;</button>
+                <ul class="nav">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Events</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+                <button class="nav-arrow right" onclick="scrollNav(1)">&#9654;</button>
             </div>
         </div>
 
@@ -131,9 +158,21 @@
             <div class="button-container">
             <a href="https://discord.gg/5MZyyq3MSw" class="discord-link" target="_blank">Our Discord server!</a>
                 <a href="https://vrchat.com/home/group/grp_e219fa60-9a36-45f2-a5c9-cd848ce0f6ed" class="vrchat-link" target="_blank">Our VRChat group!</a>
+            </div>
         </div>
     </div>
-    </div>
+
+    <script>
+        function scrollNav(direction) {
+            const nav = document.querySelector('.nav');
+            const scrollAmount = nav.offsetWidth / 2; // Adjust for desired scroll increment
+            if (direction === 1) {
+                nav.scrollLeft += scrollAmount;
+            } else {
+                nav.scrollLeft -= scrollAmount;
+            }
+        }
+    </script>
 
 </body>
 </html>
