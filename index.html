@@ -58,6 +58,7 @@
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
+            filter:blur(5px);
         }
         .header {
             background-color: rgba(0, 0, 0, 0.5);
@@ -164,15 +165,23 @@ transform: translateX(-50%); /* adjust for the width of the content */
         function scrollNav(direction) {
             const nav = document.querySelector('.nav');
             const container = document.querySelector('.nav-container');
-            const navWidth = nav.scrollWidth; // Total width of the nav
-            const containerWidth = container.offsetWidth; // Visible width
-            const scrollAmount = containerWidth * 0.8;
-
+const navItems = nav.querySelectorAll('a'); // Select all nav links
+const scrollAmount = navItems[0].offsetWidth; // Width of one link
             if (direction === 1) {
-                nav.scrollLeft = Math.min(nav.scrollLeft + scrollAmount, navWidth - containerWidth);
+nav.scrollLeft += scrollAmount;
             } else {
-                nav.scrollLeft = Math.max(nav.scrollLeft - scrollAmount, 0);
+nav.scrollLeft -= scrollAmount;
             }
+
+// Optional: Add logic to disable arrows when reaching the end
+// For example:
+// const leftArrow = document.querySelector('.nav-arrow.left');
+// const rightArrow = document.querySelector('.nav-arrow.right');
+// if (nav.scrollLeft <= 0) {
+// leftArrow.disabled = true;
+// } else {
+// leftArrow.disabled = false;
+// }
         }
     </script>
 
