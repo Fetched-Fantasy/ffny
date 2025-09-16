@@ -53,13 +53,25 @@
         }
 
         .parallax {
-            background-image: url("https://raw.githubusercontent.com/Fetched-Fantasy/ffny/refs/heads/main/Copilot_20250903_093151.png");
+            position: relative; /* Needed for pseudo-element positioning */
             height: 100%;
+            overflow: hidden; /* Hide any content that overflows */
+        }
+
+        .parallax::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("https://raw.githubusercontent.com/Fetched-Fantasy/ffny/refs/heads/main/Copilot_20250903_093151.png");
             background-attachment: fixed;
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
-            filter: blur(5px); /* Add the blur effect */
+            filter: blur(5px); /* Apply blur to the background */
+            z-index: -1; /* Place the background behind the content */
         }
 
         .header {
