@@ -7,14 +7,14 @@
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Fetched Fantasy">
     <meta property="og:description" content="Fetched Fantasy is a virtual group in a game called VRChat that hosts events/instances for people to have a good time in.">
-    <meta property="og:image" content="https://cdn.discordapp.com/attachments/1275990031105921116/1417572146120491038/Copilot_20250903_093151.png?ex=68caf870&is=68c9a6f0&hm=524df17f894dc5ef445d7ef6a1e9008b22c53e8d1ba2b945423f50a279069f31&"> <!-- Replace with your image -->
-    <meta property="og:url" content="YOUR_PAGE_URL"> <!-- Replace with your URL -->
+    <meta property="og:image" content="https://github.com/Fetched-Fantasy/ffny/blob/main/Copilot_20250903_093151.png"> <!-- Replace with your image -->
+    <meta property="og:url" content="https://fetched-fantasy.github.io/ffny/"> <!-- Replace with your URL -->
     <meta property="og:type" content="website">
 
     <!-- Favicon -->
-    <link rel="icon" href="https://cdn.discordapp.com/attachments/1275990031105921116/1417572146120491038/Copilot_20250903_093151.png?ex=68caf870&is=68c9a6f0&hm=524df17f894dc5ef445d7ef6a1e9008b22c53e8d1ba2b945423f50a279069f31&" type="image/x-icon">
+    <link rel="icon" href="https://github.com/Fetched-Fantasy/ffny/blob/main/Copilot_20250903_093151.png" type="image/x-icon">
 
-    <title>About Me</title>
+    <title>Fetched Fantasy</title>
     <style>
         body, html {
             height: 100%;
@@ -26,7 +26,7 @@
 
         .parallax {
             /* The image used */
-            background-image: url("https://via.placeholder.com/1920x1080"); /* Replace with your image */
+            background-image: url("https://github.com/Fetched-Fantasy/ffny/blob/main/Copilot_20250903_093151.png"); /* Replace with your image */
 
             /* Set a specific height */
             height: 100%;
@@ -59,15 +59,25 @@
             background-color: rgba(0, 0, 0, 0.7);
             text-align: center;
         }
-
-        .discord-link {
-            display: inline-block;
+        .button-container { /* Added container for buttons */
             margin-top: 20px;
+        }
+
+        .discord-link, .vrchat-link { /* Added vrchat-link class */
+            display: inline-block;
             padding: 10px 20px;
-            background-color: #7289DA;
+            margin: 0 10px; /* Added spacing between buttons */
             color: white;
             text-decoration: none;
             border-radius: 5px;
+        }
+
+        .discord-link {
+            background-color: #7289DA;
+        }
+
+        .vrchat-link { /* Style for VRChat button */
+            background-color: #4693FF; /* Example VRChat color */
         }
     </style>
 </head>
@@ -75,7 +85,7 @@
 
     <div class="parallax">
         <div class="header">
-            <h1>My Awesome Page</h1>
+            <h1>Fetched Fantasy</h1>
             <div class="nav">
                 <a href="#">Home</a>
                 <a href="#">About</a>
@@ -86,9 +96,12 @@
 
         <div class="about-me">
             <h2>About Me</h2>
-            <p>This is a brief introduction about myself. I enjoy coding, learning new things, and building awesome projects.</p>
-            <a href="https://discord.gg/YOUR_DISCORD_SERVER_INVITE" class="discord-link" target="_blank">Join My Discord Server</a>
+            <p>Welcome to Fetched Fantasy! We are a virtual group that hosts events/instances within VRChat. Our focus is to host worlds with the safety of users in mind. You can join our discord below and our vrchat too!</p>
+            <div class="button-container">
+            <a href="https://discord.gg/5MZyyq3MSw" class="discord-link" target="_blank">Our Discord server!</a>
+                <a href="https://vrchat.com/home/group/grp_e219fa60-9a36-45f2-a5c9-cd848ce0f6ed" class="vrchat-link" target="_blank">Our VRChat group!</a>
         </div>
+    </div>
     </div>
 
 </body>
