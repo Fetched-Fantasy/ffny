@@ -86,9 +86,10 @@ overflow: hidden;
 position: relative;
 width: 100px; /* width of one item */
 margin: 0 auto;
-display: flex; /* Center content horizontally */
-justify-content: center; /* Center content horizontally */
-align-items: center; /* Center items vertically */
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 0 20px; /* Add padding to left and right */
 }
 
 .nav {
@@ -99,6 +100,7 @@ padding: 0;
 list-style: none;
 width: max-content;
 scroll-behavior: smooth; /* For smooth scrolling */
+overflow-x: auto;
 }
 
         .nav a {
@@ -203,16 +205,19 @@ rightArrow.disabled = currentItem === navItems.length - 1;
 }
 
 function scrollNav(direction) {
+            const scrollAmount = itemWidth;
             if (direction === 1) {
+nav.scrollLeft += scrollAmount;
 currentItem = Math.min(currentItem + 1, navItems.length - 1);
             } else {
+nav.scrollLeft -= scrollAmount;
 currentItem = Math.max(currentItem - 1, 0);
             }
-
-currentPosition = -currentItem * itemWidth;
-nav.style.transform = `translateX(${currentPosition}px)`;
 updateButtons();
 }
+// Set initial scroll position to center "Home"
+nav.scrollLeft = 0;
+updateButtons();
     </script>
 </body>
 </html>
