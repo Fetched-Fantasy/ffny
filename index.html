@@ -18,31 +18,31 @@
     {
         "@context": "https://schema.org",
         "@type": "Organization",
-    "name": "Fetched Fantasy",
-    "description": "Fetched Fantasy is a virtual group in a game called VRChat that hosts events/instances for people to have a good time in.",
-    "url": "https://fetched-fantasy.github.io/ffny/",
-    "logo": "https://github.com/Fetched-Fantasy/ffny/blob/main/Copilot_20250903_093151.png",
-        "sameAs": [
-        "https://discord.gg/5MZyyq3MSw",
-        "https://www.youtube.com/",
-        "https://twitter.com/",
-        "https://vrchat.com/home/group/grp_e219fa60-9a36-45f2-a5c9-cd848ce0f6ed"
-  ],
-  "memberOf": {
-        "@type": "VirtualLocation",
-    "name": "VRChat",
-    "url": "https://vrchat.com/",
-    "description": "The group exists within the VRChat metaverse."
-  },
-    "keywords": "VRChat, community, events, social, virtual reality",
-  "contactPoint": {
-    "@type": "ContactPoint",
-    "contactType": "customer service",
+        "name": "Fetched Fantasy",
+        "description": "Fetched Fantasy is a virtual group in a game called VRChat that hosts events/instances for people to have a good time in.",
         "url": "https://fetched-fantasy.github.io/ffny/",
-        "email": "contact@your-email.com"
-  }
-}
-</script>
+        "logo": "https://github.com/Fetched-Fantasy/ffny/blob/main/Copilot_20250903_093151.png",
+        "sameAs": [
+            "https://discord.gg/5MZyyq3MSw",
+            "https://www.youtube.com/",
+            "https://twitter.com/",
+            "https://vrchat.com/home/group/grp_e219fa60-9a36-45f2-a5c9-cd848ce0f6ed"
+        ],
+        "memberOf": {
+            "@type": "VirtualLocation",
+            "name": "VRChat",
+            "url": "https://vrchat.com/",
+            "description": "The group exists within the VRChat metaverse."
+        },
+        "keywords": "VRChat, community, events, social, virtual reality",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer service",
+            "url": "https://fetched-fantasy.github.io/ffny/",
+            "email": "contact@your-email.com"
+        }
+    }
+    </script>
     <style>
         body, html {
             height: 100%;
@@ -70,14 +70,18 @@
 
         .nav-container {
             overflow: hidden; /* Hide overflowing links */
+            position: relative; /* Needed for absolute positioning of arrows */
         }
 
         .nav {
             margin-top: 10px;
             display: flex; /* Arrange links horizontally */
-            transition: transform 0.5s ease-in-out; /* Smooth transition */
+            transition: transform 0.3s ease-in-out; /* Smooth transition */
             padding: 0;
             list-style: none; /* Remove bullet points */
+            width: max-content; /* Make nav wide enough to contain all items */
+            margin-left: auto;
+            margin-right: auto; /* Center the nav */
         }
 
         .nav a {
@@ -97,6 +101,7 @@
             border: none;
             padding: 10px;
             cursor: pointer;
+            z-index: 10; /* Ensure arrows are on top */
         }
 
         .nav-arrow.left {
@@ -146,7 +151,10 @@
                     <li><a href="#">Home</a></li>
                     <li><a href="#">About</a></li>
                     <li><a href="#">Events</a></li>
+                    <li><a href="#">Community</a></li>
                     <li><a href="#">Contact</a></li>
+                    <li><a href="#">More</a></li>
+                    <li><a href="#">Links</a></li>
                 </ul>
                 <button class="nav-arrow right" onclick="scrollNav(1)">&#9654;</button>
             </div>
@@ -165,7 +173,9 @@
     <script>
         function scrollNav(direction) {
             const nav = document.querySelector('.nav');
-            const scrollAmount = nav.offsetWidth / 2; // Adjust for desired scroll increment
+            const container = document.querySelector('.nav-container');
+            const scrollAmount = container.offsetWidth * 0.8; // Scroll 80% of container width
+
             if (direction === 1) {
                 nav.scrollLeft += scrollAmount;
             } else {
