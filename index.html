@@ -197,9 +197,7 @@ const leftArrow = document.querySelector('.nav-arrow.left');
 const rightArrow = document.querySelector('.nav-arrow.right');
 const itemWidth = 100;
 let currentPosition = 0;
-let currentItem = 0;
-
-
+let currentItem = 0; // Start with the first item ("Home")
 function updateButtons() {
 leftArrow.disabled = currentItem === 0;
 rightArrow.disabled = currentItem === navItems.length - 1;
@@ -217,6 +215,9 @@ nav.style.transform = `translateX(${currentPosition}px)`;
 updateButtons();
 }
 
+// Initialize: Set initial position and button states
+currentPosition = -currentItem * itemWidth;
+nav.style.transform = `translateX(${currentPosition}px)`;
 updateButtons();
     </script>
 </body>
