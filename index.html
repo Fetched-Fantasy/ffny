@@ -197,29 +197,24 @@ background-color: #4693FF;
 const navItems = document.querySelectorAll('.nav li');
 const leftArrow = document.querySelector('.nav-arrow.left');
 const rightArrow = document.querySelector('.nav-arrow.right');
-const itemWidth = 100; // The width has to match the nav-container width
-let currentPosition = 0;
 let currentItem = 0; // Start with the first item ("Home")
-
 function updateButtons() {
 leftArrow.disabled = currentItem === 0;
 rightArrow.disabled = currentItem === navItems.length - 1;
 }
-
 function scrollNav(direction) {
-            const scrollAmount = itemWidth;
             if (direction === 1) {
-nav.scrollLeft += scrollAmount;
 currentItem = Math.min(currentItem + 1, navItems.length - 1);
             } else {
-nav.scrollLeft -= scrollAmount;
 currentItem = Math.max(currentItem - 1, 0);
             }
+            navItems[currentItem].scrollIntoView({
+                behavior: "smooth",
+                block: "nearest",
+                inline: "center"
+            });
 updateButtons();
 }
-// Set initial scroll position to center "Home"
-nav.scrollLeft = 0;
-updateButtons();
     </script>
 </body>
 </html>
