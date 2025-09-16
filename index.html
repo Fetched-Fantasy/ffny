@@ -86,10 +86,10 @@ overflow: hidden;
 position: relative;
 width: 100px; /* width of one item */
 margin: 0 auto;
-display: flex;
-justify-content: center; /* Center content horizontally */
-align-items: center; /* Center items vertically */
-        }
+/*display: flex;  REMOVED */
+/*justify-content: center;  REMOVED */
+/*align-items: center;   REMOVED */
+}
 
 .nav {
 margin-top: 10px;
@@ -100,7 +100,7 @@ list-style: none;
 width: max-content;
 position: relative;
 left: 0; /* initial position */
-transform: translateX(0px);
+/*transform: translateX(0px);  REMOVED */
 }
 
         .nav a {
@@ -195,9 +195,10 @@ background-color: #4693FF;
 const navItems = document.querySelectorAll('.nav li');
 const leftArrow = document.querySelector('.nav-arrow.left');
 const rightArrow = document.querySelector('.nav-arrow.right');
-const itemWidth = 100;
+const itemWidth = 100; // The width has to match the nav-container width
 let currentPosition = 0;
 let currentItem = 0; // Start with the first item ("Home")
+
 function updateButtons() {
 leftArrow.disabled = currentItem === 0;
 rightArrow.disabled = currentItem === navItems.length - 1;
@@ -214,11 +215,6 @@ currentPosition = -currentItem * itemWidth;
 nav.style.transform = `translateX(${currentPosition}px)`;
 updateButtons();
 }
-
-// Initialize: Set initial position and button states
-currentPosition = -currentItem * itemWidth;
-nav.style.transform = `translateX(${currentPosition}px)`;
-updateButtons();
     </script>
 </body>
 </html>
