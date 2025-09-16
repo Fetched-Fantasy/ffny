@@ -51,6 +51,7 @@
             color: white;
             line-height: 1.6;
         }
+
         .parallax {
             background-image: url("https://raw.githubusercontent.com/Fetched-Fantasy/ffny/refs/heads/main/Copilot_20250903_093151.png");
             height: 100%;
@@ -58,20 +59,23 @@
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
-            filter:blur(5px);
+            filter: blur(5px); /* Add the blur effect */
         }
+
         .header {
             background-color: rgba(0, 0, 0, 0.5);
             padding: 20px;
             text-align: center;
             position: relative; /* For positioning the arrows */
         }
+
         .nav-container {
             overflow: hidden; /* Hide overflowing links */
             position: relative; /* Needed for absolute positioning of arrows */
 width: 50%; /* Limit the container width to center content */
 margin: 0 auto; /* Center the container horizontally */
         }
+
         .nav {
             margin-top: 10px;
             display: flex; /* Arrange links horizontally */
@@ -83,6 +87,7 @@ position: relative;
 left: 50%; /* initial position for centering */
 transform: translateX(-50%); /* adjust for the width of the content */
         }
+
         .nav a {
             color: white;
             text-decoration: none;
@@ -90,6 +95,7 @@ transform: translateX(-50%); /* adjust for the width of the content */
             white-space: nowrap; /* Prevent links from wrapping */
             display: block;
         }
+
         .nav-arrow {
             position: absolute;
             top: 50%;
@@ -101,21 +107,26 @@ transform: translateX(-50%); /* adjust for the width of the content */
             cursor: pointer;
             z-index: 10; /* Ensure arrows are on top */
         }
+
         .nav-arrow.left {
             left: 0;
         }
+
         .nav-arrow.right {
             right: 0;
         }
+
         .about-me {
             padding: 50px;
             background-color: rgba(0, 0, 0, 0.7);
             text-align: center;
         }
+
         .button-container {
             margin-top: 20px;
         }
-        .discord-link, .vrchat-link {
+        .discord-link,
+        .vrchat-link {
             display: inline-block;
             padding: 10px 20px;
             margin: 0 10px;
@@ -123,9 +134,11 @@ transform: translateX(-50%); /* adjust for the width of the content */
             text-decoration: none;
             border-radius: 5px;
         }
+
         .discord-link {
             background-color: #7289DA;
         }
+
         .vrchat-link {
             background-color: #4693FF;
         }
