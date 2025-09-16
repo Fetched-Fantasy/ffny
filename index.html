@@ -138,13 +138,13 @@ transform: translateX(-50%); /* adjust for the width of the content */
             <div class="nav-container">
                 <button class="nav-arrow left" onclick="scrollNav(-1)">&#9664;</button>
                 <ul class="nav">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Events</a></li>
-                    <li><a href="#">Community</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">More</a></li>
-                    <li><a href="#">Links</a></li>
+                    <li><a href="">Home</a></li>
+                    <li><a href="">About</a></li>
+                    <li><a href="">Events</a></li>
+                    <li><a href="">Community</a></li>
+                    <li><a href="">Contact</a></li>
+                    <li><a href="">More</a></li>
+                    <li><a href="">Links</a></li>
                 </ul>
                 <button class="nav-arrow right" onclick="scrollNav(1)">&#9654;</button>
             </div>
@@ -164,12 +164,14 @@ transform: translateX(-50%); /* adjust for the width of the content */
         function scrollNav(direction) {
             const nav = document.querySelector('.nav');
             const container = document.querySelector('.nav-container');
-            const scrollAmount = container.offsetWidth * 0.8; // Scroll 80% of container width
+            const navWidth = nav.scrollWidth; // Total width of the nav
+            const containerWidth = container.offsetWidth; // Visible width
+            const scrollAmount = containerWidth * 0.8;
 
             if (direction === 1) {
-                nav.scrollLeft += scrollAmount;
+                nav.scrollLeft = Math.min(nav.scrollLeft + scrollAmount, navWidth - containerWidth);
             } else {
-                nav.scrollLeft -= scrollAmount;
+                nav.scrollLeft = Math.max(nav.scrollLeft - scrollAmount, 0);
             }
         }
     </script>
