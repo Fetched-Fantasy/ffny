@@ -82,25 +82,19 @@ position: relative;
         }
 
 .nav-container {
-overflow: hidden;
 position: relative;
-width: 100px; /* width of one item */
 margin: 0 auto;
 display: flex;
 justify-content: center;
 align-items: center;
-padding: 0 20px; /* Add padding to left and right */
 }
 
 .nav {
 margin-top: 10px;
 display: flex;
-transition: scroll-behavior 0.3s ease-in-out; /* Smooth transition */
 padding: 0;
 list-style: none;
-width: max-content;
-scroll-behavior: smooth; /* For smooth scrolling */
-overflow-x: auto;
+width: auto;
 }
 
         .nav a {
@@ -109,21 +103,12 @@ overflow-x: auto;
 padding: 10px;
 white-space: nowrap;
 display: block;
-width: 100px; /* MATCH NAV-CONTAINER width */
-text-align: center; /* Center the text */
-        }
+text-align: center;
+}
 
 .nav-arrow {
-position: absolute;
-top: 50%;
-transform: translateY(-50%);
-background: rgba(0, 0, 0, 0.5);
-color: white;
-border: none;
-padding: 10px;
-cursor: pointer;
-z-index: 10;
-        }
+display: none;
+}
 
 .nav-arrow.left {
 left: 0;
@@ -168,9 +153,6 @@ background-color: #4693FF;
         <div class="header">
             <h1>Fetched Fantasy</h1>
             <div class="nav-container">
-<button class="nav-arrow left" onclick="scrollNav(-1)" disabled>
-&#9664;
-</button>
                 <ul class="nav">
                     <li><a href="">Home</a></li>
                     <li><a href="">About</a></li>
@@ -180,7 +162,6 @@ background-color: #4693FF;
                     <li><a href="">More</a></li>
                     <li><a href="">Links</a></li>
                 </ul>
-                <button class="nav-arrow right" onclick="scrollNav(1)">&#9654;</button>
             </div>
         </div>
         <div class="about-me">
@@ -192,29 +173,5 @@ background-color: #4693FF;
             </div>
         </div>
     </div>
-    <script>
-            const nav = document.querySelector('.nav');
-const navItems = document.querySelectorAll('.nav li');
-const leftArrow = document.querySelector('.nav-arrow.left');
-const rightArrow = document.querySelector('.nav-arrow.right');
-let currentItem = 0; // Start with the first item ("Home")
-function updateButtons() {
-leftArrow.disabled = currentItem === 0;
-rightArrow.disabled = currentItem === navItems.length - 1;
-}
-function scrollNav(direction) {
-            if (direction === 1) {
-currentItem = Math.min(currentItem + 1, navItems.length - 1);
-            } else {
-currentItem = Math.max(currentItem - 1, 0);
-            }
-            navItems[currentItem].scrollIntoView({
-                behavior: "smooth",
-                block: "nearest",
-                inline: "center"
-            });
-updateButtons();
-}
-    </script>
 </body>
 </html>
