@@ -43,121 +43,7 @@
         }
     }
     </script>
-    <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-            font-family: Arial, sans-serif;
-            color: white;
-line-height: 1.6;
-        }
-
-.parallax {
-position: relative;
-height: 100%;
-overflow: hidden;
-}
-
-.parallax::before {
-content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-width: 100%;
-height: 100%;
-background-image: url("https://raw.githubusercontent.com/Fetched-Fantasy/ffny/refs/heads/main/Copilot_20250903_093151.png");
-background-attachment: fixed;
-background-position: center;
-background-repeat: no-repeat;
-background-size: cover;
-filter: blur(5px);
-z-index: -1;
-        }
-
-.header {
-background-color: #222; /* Dark gray background */
-padding: 3px; /* Reduced padding */
-    text-align: center;
-    position: relative;
-color: #ddd; /* Light gray text color */
-font-family: serif; /* Example font */
-text-transform: uppercase; /* Make it uppercase */
-letter-spacing: 0.1em; /* Space the letters */
-}
-
-.nav-container {
-position: relative;
-margin: 0 auto;
-display: flex;
-justify-content: center;
-align-items: center;
-}
-
-.nav {
-margin-top: 10px;
-display: flex;
-padding: 0;
-list-style: none;
-width: auto;
-}
-
-        .nav a {
-            color: white;
-            text-decoration: none;
-padding: 10px;
-white-space: nowrap;
-display: block;
-text-align: center;
-}
-
-.nav-arrow {
-display: none;
-}
-
-.nav-arrow.left {
-left: 0;
-        }
-
-.nav-arrow.right {
-right: 0;
-}
-
-.about-me {
-padding: 50px;
-background-color: rgba(0, 0, 0, 0.7);
-text-align: center;
-}
-
-.button-container {
-margin-top: 20px;
-}
-
-.discord-link,
-.vrchat-link {
-display: inline-flex; /* Changed to inline-flex */
-align-items: center; /* Vertically center the image */
-padding: 10px 20px;
-margin: 0 10px;
-color: white;
-text-decoration: none;
-border-radius: 5px;
-gap: 5px; /* Space between image and text */
-}
-
-.discord-link {
-background-color: #7289DA;
-}
-
-.vrchat-link {
-background-color: #4693FF;
-}
-
-.button-image {
-width: 20px; /* Adjust image size */
-height: 20px;
-vertical-align: middle; /* Align image with text */
-}
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -167,7 +53,7 @@ vertical-align: middle; /* Align image with text */
             <div class="nav-container">
                 <ul class="nav">
                     <li><a href="">Home</a></li>
-                    <li><a href="">About</a></li>
+                    <li><a href="about.html">About</a></li>
                     <li><a href="">Events</a></li>
                     <li><a href="">Contact</a></li>
                 </ul>
