@@ -43,8 +43,8 @@
 
         function parseCSV(csvText) {
             const lines = csvText.split('\n');
-            const headers = lines[0].split(',').map(header => header.trim());
             const events = [];
+            const headers = lines[0].split(',').map(header => header.trim());
 
             for (let i = 1; i < lines.length; i++) {
                 const data = lines[i].split(',');
@@ -73,20 +73,33 @@
                 const content = document.createElement('p');
                 content.textContent = event.Content;
 
-                const img = document.createElement('img');
-                img.src = event.ImageURL;
-                img.alt = event.Title;
-                img.classList.add('event-image');
+
+
+
+
+
+
+
+
+
+
 
                 const link = document.createElement('a');
                 link.href = event.Link;
                 link.textContent = 'Learn More';
-
+                //skipping the image
+                if(event.ImageURL != null && event.ImageURL != "" )
+                {
+                    const img = document.createElement('img');
+                    img.src = event.ImageURL;
+                    img.alt = event.Title;
+                    img.classList.add('event-image');
+                    eventDiv.appendChild(img);
+                }
                 eventDiv.appendChild(title);
                 eventDiv.appendChild(content);
-                eventDiv.appendChild(img);
-                eventDiv.appendChild(link);
 
+                eventDiv.appendChild(link);
                 container.appendChild(eventDiv);
             });
         }
@@ -95,5 +108,4 @@
         window.addEventListener('load', loadEvents);
     </script>
 </body>
-</html>
 </html>
