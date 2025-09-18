@@ -4,7 +4,7 @@ margin: 0;
 font-family: Arial, sans-serif;
 color: white;
 line-height: 1.6;
-        }
+}
 
 .parallax {
 position: relative;
@@ -110,42 +110,43 @@ background-color: #4693FF;
 width: 20px; /* Adjust image size */
 height: 20px;
 vertical-align: middle; /* Align image with text */
+}
 
 /* Profile Styles */
-
 .profile-container {
  display: flex; /* Display profiles in a row */
  flex-wrap: wrap; /* Allow profiles to wrap to the next line */
  justify-content: center; /* Center profiles horizontally */
+ align-items: flex-start; /* Align items at the top */
  margin: 20px auto;
  width: 80%; /* Limit the width of the container */
 }
 
 .profile-square {
- width: 150px; /* Adjust size as needed */
- background-color: rgba(0, 0, 0, 0.5);
- border-radius: 10px;
- padding: 15px;
- text-align: center;
- margin: 10px; /* Spacing between profiles */
+        width: 120px; /* Smaller width */
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        padding: 10px; /* Smaller padding */
+        text-align: center;
+        margin: 10px; /* Spacing between profiles */
+        box-sizing: border-box; /* Include padding in width calculation */
 }
 
 .profile-image {
- width: 50px; /* Adjust image size */
- height: 50px;
- border-radius: 50%; /* Make it a circle */
- margin-bottom: 10px;
+        width: 40px; /* Smaller image */
+        height: 40px; /* Smaller image */
+        border-radius: 50%; /* Make it a circle */
+        margin-bottom: 5px; /* Less margin */
 }
 
 .profile-username {
- font-size: 1.2em;
- color: white;
- margin-bottom: 5px;
+        font-size: 1em; /* Smaller font size */
+        color: white;
+        margin-bottom: 3px; /* Less margin */
 }
 
 .profile-role {
- font-size: 0.9em;
- color: #ddd;
- margin-bottom: 0;
-}
+        font-size: 0.8em; /* Smaller font size */
+        color: #ddd;
+        margin-bottom: 0;
 }
