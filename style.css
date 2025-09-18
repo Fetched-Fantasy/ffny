@@ -112,6 +112,16 @@ height: 20px;
 vertical-align: middle; /* Align image with text */
 }
 
+/* Styling for event images */
+.event-image {
+ max-width: 300px; /* Maximum width */
+ max-height: 200px; /* Maximum height */
+ width: auto; /* Adjust width automatically */
+ height: auto; /* Adjust height automatically */
+ display: block; /* Make it a block-level element */
+ margin: 0 auto; /* Center the image horizontally */
+}
+
 /* Profile Styles */
 .profile-container {
  display: flex; /* Display profiles in a row */

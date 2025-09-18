@@ -76,6 +76,7 @@
                 const img = document.createElement('img');
                 img.src = event.ImageURL;
                 img.alt = event.Title;
+                img.classList.add('event-image');
 
                 const link = document.createElement('a');
                 link.href = event.Link;
@@ -94,4 +95,5 @@
         window.addEventListener('load', loadEvents);
     </script>
 </body>
+</html>
 </html>
