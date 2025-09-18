@@ -6,8 +6,9 @@
     <title>404 - Page Not Found</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f0f0f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #282c34; /* Dark, moody background */
+            color: #abb2bf; /* Muted text color */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -17,39 +18,43 @@
         }
 
         .container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #3e4451; /* Slightly lighter container */
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* More pronounced shadow */
         }
 
         h1 {
-            font-size: 3em;
-            color: #444;
-            margin-bottom: 10px;
+            font-size: 3.5em;
+            color: #e06c75; /* A pop of color */
+            margin-bottom: 15px;
+            font-weight: 600;
         }
 
         p {
-            font-size: 1.2em;
-            color: #777;
-            margin-bottom: 20px;
+            font-size: 1.3em;
+            color: #98c379; /* A different accent color */
+            margin-bottom: 25px;
+            line-height: 1.6;
         }
 
         a {
-            color: #007bff;
+            color: #61afef; /* Muted link color */
             text-decoration: none;
+            transition: color 0.3s ease;
         }
 
         a:hover {
-            text-decoration: underline;
+            color: #c678dd; /* A different hover color */
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>404 - Page Not Found</h1>
-        <p>Oops! It seems the page you're looking for doesn't exist.</p>
-        <p>Maybe you can try going back <a href="https://fetched-fantasy.github.io/ffny/">to the homepage</a>.</p>
+        <h1>404</h1>
+        <p>The page you're looking for couldn't be found.</p>
+        <p>Let's get you back <a href="/">home</a>.</p>
     </div>
 </body>
 </html>
