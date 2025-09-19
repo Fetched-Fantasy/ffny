@@ -44,6 +44,18 @@
     }
     </script>
     <link rel="stylesheet" href="style.css">
+    <script>
+// Get the modal
+function openProfileModal(profile) {
+ var modal = document.getElementById(profile+'Modal');
+ modal.style.display = "block";
+}
+// When the user clicks on <span> (x), close the modal
+function closeProfileModal(profile) {
+ var modal = document.getElementById(profile+'Modal');
+ modal.style.display = "none";
+}
+    </script>
 </head>
 
 <body>
@@ -66,16 +78,32 @@
         <!-- Profile Container -->
         <div class="profile-container">
             <!-- Profile Square 1 -->
-            <div class="profile-square">
+            <div class="profile-square" onclick="openProfileModal('tellsfox')">
                 <img src="https://media.discordapp.net/attachments/1010549216776568943/1418282395601338548/5f651f4bec933d960381e6bff8864566.png?ex=68cd8de9&is=68cc3c69&hm=f8057b030ae86fc1381b6f5f6913e036370b6589cacce1c8c3f5d43543589493&=&format=webp&quality=lossless&width=480&height=480" alt="Profile Picture" class="profile-image">
                 <h3 class="profile-username">Tells Fox</h3>
-                <p class="profile-role">Creator/Founder</p>
+                <p class="profile-role">Founder/creator/owner</p>
+            </div>
+            <!-- Profile Modal -->
+            <div id="tellsfoxModal" class="profile-modal">
+                <div class="profile-modal-content">
+                    <span class="close" onclick="closeProfileModal('tellsfox')">&times;</span>
+                    <h2>Tells Fox</h2>
+                    <p>More info about Tells Fox...</p>
+                </div>
             </div>
             <!-- Profile Square 2 -->
-            <div class="profile-square">
+            <div class="profile-square" onclick="openProfileModal('sylvertongue')">
                 <img src="https://cdn.discordapp.com/avatars/950276838855413840/c253ab7d6232ab97a774bf4c104d6068.webp?size=160" alt="Profile Picture" class="profile-image">
                 <h3 class="profile-username">SylverTongue</h3>
                 <p class="profile-role">Co-owner</p>
+            </div>
+            <!-- Profile Modal -->
+            <div id="sylvertongueModal" class="profile-modal">
+                <div class="profile-modal-content">
+                    <span class="close" onclick="closeProfileModal('sylvertongue')">&times;</span>
+                    <h2>SylverTongue</h2>
+                    <p>More info about SylverTongue...</p>
+                </div>
             </div>
         </div>
 </body>

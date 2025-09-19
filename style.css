@@ -123,6 +123,7 @@ vertical-align: middle; /* Align image with text */
 }
 
 /* Profile Styles */
+
 .profile-container {
  display: flex; /* Display profiles in a row */
  flex-wrap: wrap; /* Allow profiles to wrap to the next line */
@@ -130,6 +131,7 @@ vertical-align: middle; /* Align image with text */
  align-items: flex-start; /* Align items at the top */
  margin: 20px auto;
  width: 80%; /* Limit the width of the container */
+ position: relative; /* Required for positioning the modals */
 }
 
 .profile-square {
@@ -140,6 +142,7 @@ vertical-align: middle; /* Align image with text */
         text-align: center;
         margin: 10px; /* Spacing between profiles */
         box-sizing: border-box; /* Include padding in width calculation */
+ cursor: pointer; /* Indicate it's clickable */
 }
 
 .profile-image {
@@ -150,7 +153,7 @@ vertical-align: middle; /* Align image with text */
 }
 
 .profile-username {
-        font-size: 1em; /* Smaller font size */
+ font-size: 1em;
         color: white;
         margin-bottom: 3px; /* Less margin */
 }
@@ -159,4 +162,47 @@ vertical-align: middle; /* Align image with text */
         font-size: 0.8em; /* Smaller font size */
         color: #ddd;
         margin-bottom: 0;
+}
+
+/* The Modal (background) */
+.profile-modal {
+ display: none; /* Hidden by default */
+ position: fixed; /* Stay in place */
+ z-index: 1; /* Sit on top */
+ left: 0;
+ top: 0;
+ width: 100%; /* Full width */
+ height: 100%; /* Full height */
+ overflow: auto; /* Enable scroll if needed */
+ background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.profile-modal-content {
+ background-color: #fefefe;
+ margin: 15% auto; /* 15% from the top and centered */
+ padding: 20px;
+ border: 1px solid #888;
+ width: 80%; /* Could be more or less, depending on screen size */
+ max-width: 600px; /* Set a maximum width */
+ border-radius: 10px;
+ position: relative;
+}
+
+/* The Close Button */
+.profile-modal .close {
+ position: absolute;
+ top: 10px;
+ right: 15px;
+ color: #aaa;
+ font-size: 28px;
+ font-weight: bold;
+ cursor: pointer;
+}
+
+.profile-modal .close:hover,
+.profile-modal .close:focus {
+ color: black;
+ text-decoration: none;
+ cursor: pointer;
 }
