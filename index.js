@@ -1,13 +1,11 @@
 // Define role priority (lower number = higher priority)
 const rolePriority = {
-  "Founder/Creator": 1,
-  "Founder": 1,
-  "Co-Owner": 2,
-  "Owner": 2,
-  "Lead": 3,
-  "Manager": 4,
-  "Staff": 5,
-  "Member": 6
+  "The Fox": 1,
+  "Chief": 2,
+  "Chief Verients": 2,
+  "Supervisors": 3,
+  "Sergeants": 4,
+  "Officers": 5,
 };
 
 // Load profiles from external JSON
