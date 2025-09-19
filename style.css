@@ -226,13 +226,43 @@ display: flex; /* Use flexbox for columns */
  display: block;
 }
 
+/* Toggle Button */
+#toggleProfiles {
+  background: linear-gradient(90deg, #0ff, #f0f); /* neon gradient */
+  color: #111; /* dark text for contrast */
+  border: none;
+  padding: 10px 20px;
+  margin: 1rem auto;
+  display: block;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+#toggleProfiles:hover {
+  background: linear-gradient(90deg, #f0f, #0ff);
+  color: white;
+  box-shadow: 0 0 10px #0ff, 0 0 20px #f0f;
+}
+
 /* Collapsible Profiles Wrapper */
 #profilesWrapper {
   overflow: hidden;
-  max-height: 0;              /* collapsed by default */
+  max-height: 0;
   transition: max-height 0.6s ease;
+  background: rgba(0, 0, 0, 0.6); /* dark translucent background */
+  border-radius: 10px;
+  padding: 0 1rem; /* padding only visible when expanded */
+  margin: 1rem auto;
+  width: 85%;
 }
 
 #profilesWrapper.open {
-  max-height: 2000px;         /* large enough to fit all profiles */
+  max-height: 2000px; /* large enough to fit all profiles */
+  padding: 1rem; /* add padding when open */
+  box-shadow: 0 0 15px #0ff, 0 0 25px #f0f;
 }
