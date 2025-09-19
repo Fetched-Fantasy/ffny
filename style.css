@@ -199,6 +199,7 @@ display: flex; /* Use flexbox for columns */
  font-weight: bold;
  cursor: pointer;
 }
+
 .profile-modal .close:hover,
 .profile-modal .close:focus {
  color: black;
