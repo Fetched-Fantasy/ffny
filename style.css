@@ -143,6 +143,7 @@ vertical-align: middle; /* Align image with text */
         margin: 10px; /* Spacing between profiles */
         box-sizing: border-box; /* Include padding in width calculation */
  cursor: pointer; /* Indicate it's clickable */
+ display: inline-block; /*Ensure the element is on a row */
 }
 
 .profile-image {
@@ -223,4 +224,3 @@ display: flex; /* Use flexbox for columns */
  margin: 0 auto 10px;
  display: block;
 }
-
