@@ -1,22 +1,18 @@
 [
- {
- "id": "tellsfox",
- "image": "https://media.discordapp.net/attachments/1010549216776568943/1418282395601338548/5f651f4bec933d960381e6bff8864566.png?ex=68cd8de9&is=68cc3c69&hm=f8057b030ae86fc1381b6f5f6913e036370b6589cacce1c8c3f5d43543589493&=&format=webp&quality=lossless&width=480&height=480",
- "username": "Tells Fox",
- "role": "Founder/creator",
- "description": "Hi, I'm tells fox! I'm the owner of everything related to fetched and I am happy to meet people and hangout!",
- "rank": "Owner",
- "department": "All",
- "job": "All"
- },
- {
- "id": "sylvertongue",
- "image": "https://cdn.discordapp.com/avatars/950276838855413840/c253ab7d6232ab97a774bf4c104d6068.webp?size=160",
- "username": "SylverTongue",
- "role": "Co-owner",
- "description": "A brief description about SylverTongue. This could include their interests, hobbies, or anything else you want to share.",
- "rank": "Co-Owner",
- "department": "DM",
- "job": "Management"
- }
+  {
+    "name": "Tells Fox",
+    "role": "Founder/Creator",
+    "dept": "All",
+    "job": "All",
+    "img": "https://media.discordapp.net/attachments/1101259617658394122/1130251131131138148/tells_fox.png",
+    "description": "Creative director and systems architect."
+  },
+  {
+    "name": "SylverTongue",
+    "role": "Co-Owner",
+    "dept": "DM",
+    "job": "Management",
+    "img": "https://cdn.discordapp.com/avatars/123456789/sylver.png",
+    "description": "I help manage the team and co-own everything related to Fetch."
+  }
 ]

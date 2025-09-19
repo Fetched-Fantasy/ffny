@@ -1,66 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-site-verification" content="MnycxIY1541Hu7A3wr_SPNJQSfoAjrfrrTOXaWyBEDo" />
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Fetched Fantasy">
-    <meta property="og:description" content="Fetched Fantasy is a virtual group in a game called VRChat that hosts events/instances for people to have a good time in.">
-    <meta property="og:image" content="https://raw.githubusercontent.com/Fetched-Fantasy/ffny/refs/heads/main/Copilot_20250903_093151.png">
-    <meta property="og:url" content="https://fetched-fantasy.github.io/ffny/">
-    <meta property="og:type" content="website">
-    <!-- Favicon -->
-    <link rel="icon" href="https://raw.githubusercontent.com/Fetched-Fantasy/ffny/refs/heads/main/Copilot_20250903_093151.png" type="image/x-icon">
-    <title>Fetched Fantasy</title>
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "Fetched Fantasy",
-        "description": "Fetched Fantasy is a virtual group in a game called VRChat that hosts events/instances for people to have a good time in.",
-        "url": "https://fetched-fantasy.github.io/ffny/",
-        "logo": "https://raw.githubusercontent.com/Fetched-Fantasy/ffny/refs/heads/main/Copilot_20250903_093151.png",
-        "sameAs": [
-            "https://discord.gg/5MZyyq3MSw",
-            "https://www.youtube.com/@FetchedFantasy",
-            "https://twitter.com/",
-            "https://vrchat.com/home/group/grp_e219fa60-9a36-45f2-a5c9-cd848ce0f6ed"
-        ],
-        "memberOf": {
-            "@type": "VirtualLocation",
-            "name": "VRChat",
-            "url": "https://vrchat.com/",
-            "description": "The group exists within the VRChat metaverse."
-        },
-        "keywords": "VRChat, community, events, social, virtual reality",
-        "contactPoint": {
-            "@type": "ContactPoint",
-            "contactType": "customer service",
-            "url": "https://fetched-fantasy.github.io/ffny/",
-            "email": "contact@your-email.com"
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-site-verification" content="MnycxIY1541Hu7A3wr_SPNJQSfoAjrfrrTOXaWyBEDo" />
+
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Fetched Fantasy">
+  <meta property="og:description" content="Fetched Fantasy is a virtual group in a game called VRChat that hosts events/instances for people to have a good time in.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/Fetched-Fantasy/ffny/refs/heads/main/Copilot_20250903_093151.png">
+  <meta property="og:url" content="https://fetched-fantasy.github.io/ffny/">
+  <meta property="og:type" content="website">
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://raw.githubusercontent.com/Fetched-Fantasy/ffny/refs/heads/main/Copilot_20250903_093151.png" type="image/x-icon">
+
+  <title>Fetched Fantasy</title>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Fetched Fantasy",
+    "description": "Fetched Fantasy is a virtual group in a game called VRChat that hosts events/instances for people to have a good time in.",
+    "url": "https://fetched-fantasy.github.io/ffny/",
+    "logo": "https://raw.githubusercontent.com/Fetched-Fantasy/ffny/refs/heads/main/Copilot_20250903_093151.png",
+    "sameAs": [
+      "https://discord.gg/5MZyyq3MSw",
+      "https://www.youtube.com/@FetchedFantasy",
+      "https://twitter.com/",
+      "https://vrchat.com/home/group/grp_e219fa60-9a36-45f2-a5c9-cd848ce0f6ed"
+    ],
+    "memberOf": {
+      "@type": "VirtualLocation",
+      "name": "VRChat",
+      "url": "https://vrchat.com/",
+      "description": "The group exists within the VRChat metaverse."
+    },
+    "keywords": "VRChat, community, events, social, virtual reality",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer service",
+      "url": "https://fetched-fantasy.github.io/ffny/",
+      "email": "contact@your-email.com"
     }
-    </script>
-    <link rel="stylesheet" href="style.css">
-    <script src="index.js"></script>
+  }
+  </script>
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* Profile + Modal styles */
+    .profile-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin: 3rem auto; }
+    .profile-square { cursor: pointer; width: 150px; padding: 1rem; background: #222; border-radius: 8px; transition: 0.3s; text-align: center; }
+    .profile-square:hover { background: #333; }
+    .profile-square img { width: 100%; border-radius: 8px; }
+    .profile-square p { margin: 0.5rem 0 0; }
+
+    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
+    .modal-content { background: #1a1a1a; margin: 10% auto; padding: 20px; border-radius: 10px; width: 80%; max-width: 600px; display: flex; gap: 1rem; }
+    .modal-left img { width: 120px; border-radius: 8px; }
+    .modal-left { flex: 1; }
+    .modal-right { flex: 2; text-align: left; }
+    .close { color: #fff; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+    .close:hover { color: #f00; }
+  </style>
 </head>
 <body>
-    <div class="parallax">
-        <div class="header">
-            <h1>Fetched Fantasy</h1>
-            <div class="nav-container">
-                <ul class="nav">
-                    <li><a href="">Home</a></li>
-                    <li><a href="about">About</a></li>
-                    <li><a href="events">Events</a></li>
-                    <li><a href="">Contact</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="button-container">
-            <a href="https://discord.gg/5MZyyq3MSw" class="discord-link" target="_blank"> Our Discord server!</a>
-            <a href="https://vrchat.com/home/group/grp_e219fa60-9a36-45f2-a5c9-cd848ce0f6ed" class="vrchat-link" target="_blank"> Our VRChat group!</a>
-        </div>
+  <div class="parallax">
+    <div class="header">
+      <h1>Fetched Fantasy</h1>
+      <div class="nav-container">
+        <ul class="nav">
+          <li><a href="">Home</a></li>
+          <li><a href="about">About</a></li>
+          <li><a href="events">Events</a></li>
+          <li><a href="">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="button-container">
+      <a href="https://discord.gg/5MZyyq3MSw" class="discord-link" target="_blank">Our Discord server!</a>
+      <a href="https://vrchat.com/home/group/grp_e219fa60-9a36-45f2-a5c9-cd848ce0f6ed" class="vrchat-link" target="_blank">Our VRChat group!</a>
+    </div>
+
+    <!-- Dynamic Profiles Section -->
+    <h2>Meet the Team</h2>
+    <div id="profileContainer" class="profile-container"></div>
+  </div>
+
+  <!-- Reusable Modal -->
+  <div id="profileModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeProfileModal()">&times;</span>
+      <div class="modal-left">
+        <img id="modalImage" src="" alt="">
+        <p id="modalDescription"></p>
+      </div>
+      <div class="modal-right">
+        <h2 id="modalName"></h2>
+        <p><strong>Rank:</strong> <span id="modalRole"></span></p>
+        <p><strong>Department:</strong> <span id="modalDept"></span></p>
+        <p><strong>Job:</strong> <span id="modalJob"></span></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Load profiles from external JSON
+    fetch("profiles.json")
+      .then(response => response.json())
+      .then(profiles => {
+        const container = document.getElementById("profileContainer");
+        profiles.forEach(profile => {
+          const div = document.createElement("div");
+          div.className = "profile-square";
+          div.innerHTML = `
+            <img src="${profile.img}" alt="${profile.name}">
+            <p>${profile.name}</p>
+          `;
+          div.onclick = () => openProfileModal(profile);
+          container.appendChild(div);
+        });
+      })
+      .catch(err => console.error("Error loading profiles:", err));
+
+    // Modal functions
+    function openProfileModal(profile) {
+      document.getElementById("modalName").textContent = profile.name;
+      document.getElementById("modalRole").textContent = profile.role;
+      document.getElementById("modalDept").textContent = profile.dept;
+      document.getElementById("modalJob").textContent = profile.job;
+      document.getElementById("modalImage").src = profile.img;
+      document.getElementById("modalDescription").textContent = profile.description;
+      document.getElementById("profileModal").style.display = "block";
+    }
+
+    function closeProfileModal() {
+      document.getElementById("profileModal").style.display = "none";
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById("profileModal");
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+  </script>
 </body>
 </html>
