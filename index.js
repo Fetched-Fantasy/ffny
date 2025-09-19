@@ -57,20 +57,19 @@ window.onclick = function(event) {
   }
 };
 
-// 3. Toggle script (place at the bottom of index.js)
 const toggleBtn = document.getElementById("toggleProfiles");
 const profilesWrapper = document.getElementById("profilesWrapper");
 
 // Start collapsed
-profilesWrapper.style.display = "none";
+profilesWrapper.classList.remove("open");
 toggleBtn.textContent = "Show Profiles";
 
 toggleBtn.addEventListener("click", () => {
-  if (profilesWrapper.style.display === "none") {
-    profilesWrapper.style.display = "block";
-    toggleBtn.textContent = "Hide Profiles";
-  } else {
-    profilesWrapper.style.display = "none";
+  if (profilesWrapper.classList.contains("open")) {
+    profilesWrapper.classList.remove("open");
     toggleBtn.textContent = "Show Profiles";
+  } else {
+    profilesWrapper.classList.add("open");
+    toggleBtn.textContent = "Hide Profiles";
   }
 });

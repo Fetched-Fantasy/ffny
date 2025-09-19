@@ -225,3 +225,14 @@ display: flex; /* Use flexbox for columns */
  margin: 0 auto 10px;
  display: block;
 }
+
+/* Collapsible Profiles Wrapper */
+#profilesWrapper {
+  overflow: hidden;
+  max-height: 0;              /* collapsed by default */
+  transition: max-height 0.6s ease;
+}
+
+#profilesWrapper.open {
+  max-height: 2000px;         /* large enough to fit all profiles */
+}
