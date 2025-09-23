@@ -313,3 +313,18 @@ display: flex; /* Use flexbox for columns */
   color: #888;
 }
 
+/* Style for event buttons */
+.event-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4CAF50; /* Green */
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.event-button:hover {
+  background-color: #3e8e41; /* Darker green */
+}
+
