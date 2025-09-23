@@ -4,7 +4,7 @@
     "role": "The Fox",
     "dept": "All",
     "job": "All",
-    "img": "5f651f4bec933d960381e6bff8864566.png",
+    "img": "Tells.png",
     "description": "Hi, I'm tells fox! I am the full owner of anything related to Fetched Fantasy! I am up to chat and hangout."
   },
   {
@@ -12,7 +12,15 @@
     "role": "Chief",
     "dept": "DM",
     "job": "Management",
-    "img": "c253ab7d6232ab97a774bf4c104d6068.webp",
-    "description": "I help manage the team and co-own everything related to Fetch."
+    "img": "Sylver.webp",
+    "description": "Greetings! I'm Sylvertongue, your local alien space derg and co-owner of Fetched Fantasy! Come say hello if you see me around!"
+  },
+  {
+    "name": "Misty Waters",
+    "role": "Chief",
+    "dept": "CCS, CCP, II, GS",
+    "job": "Management",
+    "img": "m.webp",
+    "description": "I am the second owner of Fetched Fantasy! I am a derg and love to chat and hangout!"
   }
 ]
