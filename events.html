@@ -36,6 +36,8 @@
     </div>
     <script>
         async function loadEvents() {
+            const container = document.getElementById('events-container');
+            container.innerHTML = '<p>Loading events...</p>'; // Display loading message
             try {
                 const response = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRaV9cyGSLvvVRHdiYrTwrdfosxSA0z2SSaBaoSLnvfBNAdd5L4gijG0eXTgsz7ya0TuWgesVPQusLM/pub?output=csv');
                 const csvText = await response.text();
@@ -43,7 +45,7 @@
                 displayEvents(events);
             } catch (error) {
                 console.error('Error fetching or parsing events:', error);
-                document.getElementById('events-container').innerHTML = '<p>Failed to load events.</p>';
+                container.innerHTML = '<p>Failed to load events.</p>'; // Display error message
             }
         }
 
