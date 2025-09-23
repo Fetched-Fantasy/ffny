@@ -306,3 +306,10 @@ display: flex; /* Use flexbox for columns */
   line-height: 1.5;
 }
 
+.loading-message {
+  text-align: center;
+  font-family: sans-serif;
+  margin-top: 20px;
+  color: #888;
+}
+
