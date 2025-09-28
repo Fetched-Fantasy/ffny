@@ -1,80 +1,118 @@
-/* chattable.css */
-
-body {
-  font-family: sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f0f0f0;
-  height: 100vh; /* Make the chat take up the full height */
-  overflow: hidden; /* Prevent scrollbars on the main body, scroll within the chat area */
+body, #top_banner, #input {
+    background: #000;
+    color: #0F0;
+    font-family: console, monospace;
 }
-
-.chat-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+#input {
+    border-top: solid 1px #555;
+    border-radius: 0;
 }
-
-.message-area {
-  flex-grow: 1;
-  padding: 10px;
-  overflow-y: auto; /* Enable vertical scrolling for messages */
+#input:empty:before {
+    color: #555;
+    content: "type a message...";
 }
-
-.message {
-  margin-bottom: 5px;
-  padding: 8px;
-  border-radius: 5px;
-  background-color: #fff;
-  word-wrap: break-word; /* Prevent long words from breaking the layout */
+#settings {
+    filter: invert(100%);
 }
-
-.message .username {
-  font-weight: bold;
-  margin-right: 5px;
-  color: #007bff; /* Blue color for usernames */
+.msgWrapper {
+    display: block;
 }
-
-.message .timestamp {
-  font-size: 0.8em;
-  color: #888;
+.allMessages {
+    display: flex;
 }
-
-.input-area {
-  padding: 10px;
-  border-top: 1px solid #ccc;
-  display: flex;
+.senderInfo, .msgBody {
+    font-weight: lighter;
+    display: inline;
 }
-
-.input-area input[type="text"] {
-  flex-grow: 1;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-right: 10px;
+.senderInfo {
+    margin-right: 10px !important;
+    font-weight: bold;
 }
-
-.input-area button {
-  padding: 8px 12px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.senderInfo:before {
+    content: "<";
 }
-.input-area button:hover {
-  background-color: #0056b3;
+.senderInfo:after {
+    content: ">"
 }
-/* Optional: Style the scrollbar (Webkit browsers like Chrome/Safari) */
-.message-area::-webkit-scrollbar {
-  width: 8px;
+.verified_icon {
+    display: inline !important;
 }
-
-.message-area::-webkit-scrollbar-track {
-  background-color: #f0f0f0;
+.allMessages[uid^='0'] { color: #FF5733; } 
+.allMessages[uid^='1'] { color: #FFC107; } 
+.allMessages[uid^='2'] { color: #4CAF50; } 
+.allMessages[uid^='3'] { color: #2196F3; } 
+.allMessages[uid^='4'] { color: #9C27B0; } 
+.allMessages[uid^='5'] { color: #FF9800; } 
+.allMessages[uid^='6'] { color: #009688; } 
+.allMessages[uid^='7'] { color: #E91E63; } 
+.allMessages[uid^='8'] { color: #607D8B; } 
+.allMessages[uid^='9'] { color: #795548; } 
+.allMessages[uid^='a'] { color: #F4BB33; } 
+.allMessages[uid^='b'] { color: #FF4081; } 
+.allMessages[uid^='c'] { color: #00BCD4; } 
+.allMessages[uid^='d'] { color: #8BC34A; } 
+.allMessages[uid^='e'] { color: #673AB7; } 
+.allMessages[uid^='f'] { color: #FF5722; } 
+.allMessages[uid^='g'] { color: #4CAF50; } 
+.allMessages[uid^='h'] { color: #3F51B5; } 
+.allMessages[uid^='i'] { color: #CDDC39; } 
+.allMessages[uid^='j'] { color: #FFEB3B; } 
+.allMessages[uid^='k'] { color: #0097A7; } 
+.allMessages[uid^='l'] { color: #D81B60; } 
+.allMessages[uid^='m'] { color: #4DB6AC; } 
+.allMessages[uid^='n'] { color: #7B1FA2; } 
+.allMessages[uid^='o'] { color: #FBC02D; } 
+.allMessages[uid^='p'] { color: #0288D1; } 
+.allMessages[uid^='q'] { color: #689F38; } 
+.allMessages[uid^='r'] { color: #D32F2F; } 
+.allMessages[uid^='s'] { color: #1976D2; } 
+.allMessages[uid^='t'] { color: #388E3C; } 
+.allMessages[uid^='u'] { color: #F06292; } 
+.allMessages[uid^='v'] { color: #455A64; } 
+.allMessages[uid^='w'] { color: #F57C00; } 
+.allMessages[uid^='x'] { color: #26A69A; } 
+.allMessages[uid^='y'] { color: #AB47BC; } 
+.allMessages[uid^='z'] { color: #FFCA28; } 
+.allMessages[uid^='A'] { color: #FF6F61; } 
+.allMessages[uid^='B'] { color: #FFD700; } 
+.allMessages[uid^='C'] { color: #00E676; } 
+.allMessages[uid^='D'] { color: #0288D1; } 
+.allMessages[uid^='E'] { color: #8E24AA; } 
+.allMessages[uid^='F'] { color: #FF8A65; } 
+.allMessages[uid^='G'] { color: #26C6DA; } 
+.allMessages[uid^='H'] { color: #AD1457; } 
+.allMessages[uid^='I'] { color: #AEEA00; } 
+.allMessages[uid^='J'] { color: #FFAB00; } 
+.allMessages[uid^='K'] { color: #00ACC1; } 
+.allMessages[uid^='L'] { color: #EC407A; } 
+.allMessages[uid^='M'] { color: #26A69A; } 
+.allMessages[uid^='N'] { color: #5E35B1; } 
+.allMessages[uid^='O'] { color: #FFA726; } 
+.allMessages[uid^='P'] { color: #039BE5; } 
+.allMessages[uid^='Q'] { color: #7CB342; } 
+.allMessages[uid^='R'] { color: #C62828; } 
+.allMessages[uid^='S'] { color: #1565C0; } 
+.allMessages[uid^='T'] { color: #2E7D32; } 
+.allMessages[uid^='U'] { color: #F06292; } 
+.allMessages[uid^='V'] { color: #37474F; } 
+.allMessages[uid^='W'] { color: #EF6C00; } 
+.allMessages[uid^='X'] { color: #00897B; } 
+.allMessages[uid^='Y'] { color: #8E24AA; } 
+.allMessages[uid^='Z'] { color: #FFB300; } 
+.sent {
+    color: #FF9800 !important;
+    font-weight: bolder;
 }
-
-.message-area::-webkit-scrollbar-thumb {
-  background-color: #ccc;
-  border-radius: 4px;
+#timestamp {
+    display: none;
+}
+.allMessages:after {
+    content: attr(time);
+    color: #555;
+    float: right;
+    margin-left: 10px;
+    font-size: 8pt;
+}
+#emojiTray, #emojiTrayToggle {
+    display: none !important;
 }
