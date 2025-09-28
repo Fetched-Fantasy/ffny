@@ -1,69 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-      <link rel="stylesheet" href="style.css">
-    <title>Chat</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .chat-container {
-            border: 1px solid #ccc;
-            padding: 10px;
-            width: 80%;
-            margin: 0 auto;
-        }
-        .message-list {
-            height: 300px;
-            overflow-y: scroll;
-            border-bottom: 1px solid #ccc;
-            padding: 10px;
-        }
-        .message-input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-        .send-button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-    </style>
+<script src="https://iframe.chat/scripts/main.min.js"></script>
 </head>
 <body>
-    <div class="chat-container">
-        <h1>Chat</h1>
-        <div class="message-list" id="message-list">
-            <!-- Messages will be displayed here -->
-        </div>
-        <input type="text" class="message-input" id="message-input" placeholder="Type your message...">
-        <button class="send-button" onclick="sendMessage()">Send</button>
-    </div>
-
+    <iframe src="https://iframe.chat/embed?chat=89451785" id="chattable"></iframe>
     <script>
-        function sendMessage() {
-            var messageInput = document.getElementById("message-input");
-            var messageList = document.getElementById("message-list");
-            var message = messageInput.value;
-
-            if (message.trim() !== "") {
-                var messageElement = document.createElement("div");
-                messageElement.textContent = message;
-                messageList.appendChild(messageElement);
-
-                messageInput.value = ""; // Clear the input
-
-                // Scroll to the bottom to show the latest message
-                messageList.scrollTop = messageList.scrollHeight;
-
-                // In a real application, you would send the message to the server here
-                // and receive new messages from the server to update the chat.
-            }
-        }
+    chattable.initialize({
+        theme: "professional" // set the value to the name of the theme
+    });
     </script>
 </body>
 </html>
