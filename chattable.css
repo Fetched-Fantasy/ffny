@@ -1,118 +1,303 @@
-body, #top_banner, #input {
-    background: #000;
-    color: #0F0;
-    font-family: console, monospace;
+/* Fetched Fantasy — Cosmic Neon Theme for iframe.chat */
+
+/* Palette and tokens */
+:root {
+  --ff-bg-0: #0a0d16;           /* deep space */
+  --ff-bg-1: #0e1320;
+  --ff-bg-2: rgba(18, 24, 38, 0.6);
+
+  --ff-grad-a: #6a00ff;         /* neon violet */
+  --ff-grad-b: #00d4ff;         /* cyber cyan */
+  --ff-grad-c: #ff00a8;         /* magenta pop */
+
+  --ff-text: #e6ecff;           /* primary text */
+  --ff-text-dim: #a8b2d1;       /* secondary */
+  --ff-text-soft: #93a1c1;      /* tertiary */
+  --ff-timestamp: #8aa1bf;
+
+  --ff-accent: #7a37ff;         /* buttons */
+  --ff-accent-2: #00bcd4;       /* alt accent */
+
+  --ff-sent: rgba(122, 55, 255, 0.18);
+  --ff-recv: rgba(0, 212, 255, 0.14);
+  --ff-border: rgba(255, 255, 255, 0.12);
+
+  --ff-success: #36d399;
+  --ff-warning: #fbbf24;
+  --ff-danger: #ef4444;
+
+  --ff-radius: 14px;
+  --ff-radius-sm: 10px;
+  --ff-blur: 22px;
+  --ff-shadow: 0 8px 24px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
+
+  --ff-font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  --ff-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
-#input {
-    border-top: solid 1px #555;
-    border-radius: 0;
+
+/* Cosmic background */
+#background {
+  position: relative;
+  font-family: var(--ff-font);
+  color: var(--ff-text);
+  background:
+    radial-gradient(1200px 600px at 10% 10%, rgba(106,0,255,0.25), transparent 60%),
+    radial-gradient(900px 500px at 90% 20%, rgba(0,212,255,0.20), transparent 65%),
+    linear-gradient(180deg, var(--ff-bg-1), var(--ff-bg-0));
+  backdrop-filter: blur(2px);
 }
-#input:empty:before {
-    color: #555;
-    content: "type a message...";
+
+/* Subtle star grain overlay */
+#background::after {
+  content: "";
+  pointer-events: none;
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.08), transparent 50%),
+    radial-gradient(1px 1px at 70% 60%, rgba(255,255,255,0.06), transparent 50%);
+  mix-blend-mode: screen;
+}
+
+/* Top banner and settings icon */
+#top_banner {
+  background: linear-gradient(90deg, rgba(106,0,255,0.35), rgba(0,212,255,0.18));
+  border-bottom: 1px solid var(--ff-border);
+  box-shadow: var(--ff-shadow);
 }
 #settings {
-    filter: invert(100%);
+  color: var(--ff-text);
+  opacity: 0.85;
+  transition: transform 160ms ease, opacity 160ms ease;
 }
+#settings:hover { transform: scale(1.06); opacity: 1; }
+
+/* Message wrapper rhythm */
 .msgWrapper {
-    display: block;
+  padding: 6px 10px;
 }
+
+/* Message cards */
 .allMessages {
-    display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 12px;
+  align-items: start;
+  margin: 10px 14px;
+  padding: 12px 14px;
+  border-radius: var(--ff-radius);
+  background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--ff-border);
+  box-shadow: var(--ff-shadow);
+  transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
 }
-.senderInfo, .msgBody {
-    font-weight: lighter;
-    display: inline;
+.allMessages:hover {
+  border-color: rgba(255,255,255,0.18);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.55);
 }
-.senderInfo {
-    margin-right: 10px !important;
-    font-weight: bold;
-}
-.senderInfo:before {
-    content: "<";
-}
-.senderInfo:after {
-    content: ">"
-}
-.verified_icon {
-    display: inline !important;
-}
-.allMessages[uid^='0'] { color: #FF5733; } 
-.allMessages[uid^='1'] { color: #FFC107; } 
-.allMessages[uid^='2'] { color: #4CAF50; } 
-.allMessages[uid^='3'] { color: #2196F3; } 
-.allMessages[uid^='4'] { color: #9C27B0; } 
-.allMessages[uid^='5'] { color: #FF9800; } 
-.allMessages[uid^='6'] { color: #009688; } 
-.allMessages[uid^='7'] { color: #E91E63; } 
-.allMessages[uid^='8'] { color: #607D8B; } 
-.allMessages[uid^='9'] { color: #795548; } 
-.allMessages[uid^='a'] { color: #F4BB33; } 
-.allMessages[uid^='b'] { color: #FF4081; } 
-.allMessages[uid^='c'] { color: #00BCD4; } 
-.allMessages[uid^='d'] { color: #8BC34A; } 
-.allMessages[uid^='e'] { color: #673AB7; } 
-.allMessages[uid^='f'] { color: #FF5722; } 
-.allMessages[uid^='g'] { color: #4CAF50; } 
-.allMessages[uid^='h'] { color: #3F51B5; } 
-.allMessages[uid^='i'] { color: #CDDC39; } 
-.allMessages[uid^='j'] { color: #FFEB3B; } 
-.allMessages[uid^='k'] { color: #0097A7; } 
-.allMessages[uid^='l'] { color: #D81B60; } 
-.allMessages[uid^='m'] { color: #4DB6AC; } 
-.allMessages[uid^='n'] { color: #7B1FA2; } 
-.allMessages[uid^='o'] { color: #FBC02D; } 
-.allMessages[uid^='p'] { color: #0288D1; } 
-.allMessages[uid^='q'] { color: #689F38; } 
-.allMessages[uid^='r'] { color: #D32F2F; } 
-.allMessages[uid^='s'] { color: #1976D2; } 
-.allMessages[uid^='t'] { color: #388E3C; } 
-.allMessages[uid^='u'] { color: #F06292; } 
-.allMessages[uid^='v'] { color: #455A64; } 
-.allMessages[uid^='w'] { color: #F57C00; } 
-.allMessages[uid^='x'] { color: #26A69A; } 
-.allMessages[uid^='y'] { color: #AB47BC; } 
-.allMessages[uid^='z'] { color: #FFCA28; } 
-.allMessages[uid^='A'] { color: #FF6F61; } 
-.allMessages[uid^='B'] { color: #FFD700; } 
-.allMessages[uid^='C'] { color: #00E676; } 
-.allMessages[uid^='D'] { color: #0288D1; } 
-.allMessages[uid^='E'] { color: #8E24AA; } 
-.allMessages[uid^='F'] { color: #FF8A65; } 
-.allMessages[uid^='G'] { color: #26C6DA; } 
-.allMessages[uid^='H'] { color: #AD1457; } 
-.allMessages[uid^='I'] { color: #AEEA00; } 
-.allMessages[uid^='J'] { color: #FFAB00; } 
-.allMessages[uid^='K'] { color: #00ACC1; } 
-.allMessages[uid^='L'] { color: #EC407A; } 
-.allMessages[uid^='M'] { color: #26A69A; } 
-.allMessages[uid^='N'] { color: #5E35B1; } 
-.allMessages[uid^='O'] { color: #FFA726; } 
-.allMessages[uid^='P'] { color: #039BE5; } 
-.allMessages[uid^='Q'] { color: #7CB342; } 
-.allMessages[uid^='R'] { color: #C62828; } 
-.allMessages[uid^='S'] { color: #1565C0; } 
-.allMessages[uid^='T'] { color: #2E7D32; } 
-.allMessages[uid^='U'] { color: #F06292; } 
-.allMessages[uid^='V'] { color: #37474F; } 
-.allMessages[uid^='W'] { color: #EF6C00; } 
-.allMessages[uid^='X'] { color: #00897B; } 
-.allMessages[uid^='Y'] { color: #8E24AA; } 
-.allMessages[uid^='Z'] { color: #FFB300; } 
+
+/* Sent vs. received colorways */
 .sent {
-    color: #FF9800 !important;
-    font-weight: bolder;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)),
+    radial-gradient(600px 280px at 92% 8%, var(--ff-sent), transparent 60%);
 }
+.received {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)),
+    radial-gradient(600px 280px at 8% 8%, var(--ff-recv), transparent 60%);
+}
+
+/* Sender info + badges */
+.senderInfo {
+  grid-column: 1 / span 2;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-weight: 600;
+  color: var(--ff-text);
+}
+.mod, .owner, .beta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
+  border: 1px solid rgba(255,255,255,0.18);
+}
+.mod { color: #7dd3fc; border-color: rgba(125, 211, 252, 0.35); }
+.owner { color: #c4b5fd; border-color: rgba(196, 181, 253, 0.35); }
+.beta { color: #f9a8d4; border-color: rgba(249, 168, 212, 0.35); }
+
+/* Message body */
+.msgBody {
+  grid-column: 1 / span 2;
+  color: var(--ff-text);
+  font-size: 15.5px;
+  line-height: 1.6;
+}
+.reply {
+  grid-column: 1 / span 2;
+  margin: 4px 0 8px 0;
+  padding: 8px 10px;
+  border-left: 3px solid var(--ff-accent-2);
+  background: rgba(0, 188, 212, 0.08);
+  color: var(--ff-text-dim);
+  border-radius: var(--ff-radius-sm);
+  font-family: var(--ff-mono);
+}
+
+/* Emojis and emoji-only messages */
+.emoji { transform: translateY(2px); }
+.allMessages.containsOnlyEmojis .emoji {
+  font-size: 26px;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.3));
+}
+
+/* Mentions highlight */
+.highlight {
+  color: #ffffff;
+  background: linear-gradient(90deg, rgba(106,0,255,0.35), rgba(255,0,168,0.30));
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+/* Timestamps */
 #timestamp {
-    display: none;
+  color: var(--ff-timestamp);
+  font-size: 12.5px;
 }
-.allMessages:after {
-    content: attr(time);
-    color: #555;
-    float: right;
-    margin-left: 10px;
-    font-size: 8pt;
+
+/* Pinned messages */
+.pinned {
+  border: 1px solid rgba(255,255,255,0.28);
+  box-shadow: 0 0 0 2px rgba(122,55,255,0.25);
 }
-#emojiTray, #emojiTrayToggle {
-    display: none !important;
+
+/* Load/scroll utility buttons */
+#loadMore, #scrollToBottom {
+  margin: 8px 14px;
+  padding: 10px 14px;
+  border-radius: var(--ff-radius-sm);
+  color: var(--ff-text);
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+  border: 1px solid var(--ff-border);
+  backdrop-filter: blur(6px);
+  transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+}
+#loadMore:hover, #scrollToBottom:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255,255,255,0.18);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.5);
+}
+
+/* Input area — contenteditable */
+#input {
+  margin: 16px 14px;
+  padding: 12px 14px;
+  min-height: 44px;
+  border-radius: var(--ff-radius);
+  color: var(--ff-text);
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+  border: 1px solid var(--ff-border);
+  backdrop-filter: blur(var(--ff-blur));
+  box-shadow: var(--ff-shadow);
+  outline: none;
+  caret-color: var(--ff-accent-2);
+}
+#input:focus {
+  border-color: rgba(0, 212, 255, 0.45);
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.25), var(--ff-shadow);
+}
+#input:empty::before {
+  content: "Type your message…";
+  color: var(--ff-text-soft);
+}
+
+/* Emoji tray */
+#emojiTray {
+  margin: 8px 14px;
+  padding: 10px;
+  border-radius: var(--ff-radius);
+  background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
+  border: 1px solid var(--ff-border);
+  backdrop-filter: blur(8px);
+}
+.emojiInGrid { filter: drop-shadow(0 5px 12px rgba(0,0,0,0.35)); }
+#emojiTrayToggle {
+  color: var(--ff-text);
+  opacity: 0.9;
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+#emojiTrayToggle:hover { transform: scale(1.05); opacity: 1; }
+
+/* Typing bubble */
+#is_typing {
+  margin: 8px 14px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  color: var(--ff-text);
+  background: linear-gradient(90deg, rgba(106,0,255,0.35), rgba(0,212,255,0.25));
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+/* Context menu options */
+.ctxMenuOption {
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: var(--ff-text);
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+  border: 1px solid var(--ff-border);
+}
+.ctxMenuOption:hover {
+  background: linear-gradient(180deg, rgba(106,0,255,0.25), rgba(0,212,255,0.18));
+  border-color: rgba(255,255,255,0.22);
+}
+
+/* Settings modal + window */
+#settingsWindow, #settingsMenu, .dialogueModal {
+  color: var(--ff-text);
+  background: linear-gradient(180deg, rgba(18,24,38,0.9), rgba(18,24,38,0.75));
+  border: 1px solid var(--ff-border);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--ff-shadow);
+  border-radius: var(--ff-radius);
+}
+#account, #dltranscript, #save, #closeSettingsBtn {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  margin: 6px 4px;
+  border-radius: var(--ff-radius-sm);
+  color: var(--ff-text);
+  border: 1px solid var(--ff-border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+  transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+#save { background: linear-gradient(180deg, rgba(54,211,153,0.15), rgba(255,255,255,0.03)); border-color: rgba(54,211,153,0.35); }
+#closeSettingsBtn { background: linear-gradient(180deg, rgba(239,68,68,0.15), rgba(255,255,255,0.03)); border-color: rgba(239,68,68,0.35); }
+#account:hover, #dltranscript:hover, #save:hover, #closeSettingsBtn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255,255,255,0.2);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.5);
+}
+
+/* Reply banner */
+#replyBanner {
+  margin: 8px 14px;
+  padding: 10px 14px;
+  border-radius: var(--ff-radius);
+  color: var(--ff-text);
+  background: linear-gradient(90deg, rgba(106,0,255,0.30), rgba(255,0,168,0.25));
+  border: 1px solid rgba(255,255,255,0.22);
+}
+
+/* Tutorial shadow (opt-in hide) */
+#shadow {
+  backdrop-filter: blur(4px);
 }
