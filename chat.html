@@ -1,9 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<script src="https://iframe.chat/scripts/main.min.js"></script>
-</head>
-<body>
+    <title>Chat</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="FFNY Chatroom">
+    <meta property="og:description" content="Where all users can freely chat">
+    <meta property="og:image" content="https://raw.githubusercontent.com/Fetched-Fantasy/ffny/refs/heads/main/Copilot_20250903_093151.png">
+    <meta property="og:url" content="https://fetched-fantasy.github.io/ffny/chat">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="https://raw.githubusercontent.com/Fetched-Fantasy/ffny/refs/heads/main/Copilot_20250903_093151.png" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
     <style>
 #chattable {
   margin-left: auto;
@@ -12,11 +19,22 @@
   height: 300px;
 }
 </style>
+</head>
+<body>
+    <div class="parallax">
+        <div class="header">
+            <h1>Fetched Fantasy</h1>
+            <div class="nav-container">
+                <ul class="nav">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+        </div>
 <iframe src="https://iframe.chat/embed?chat=89451785" id="chattable"></iframe>
-<script>
-    chattable.initialize({
-        stylesheet: "chattable.css"
-    });
-</script>
+        <script src="https://iframe.chat/scripts/main.min.js"></script>
+    </div>
 </body>
 </html>
