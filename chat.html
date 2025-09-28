@@ -4,11 +4,19 @@
 <script src="https://iframe.chat/scripts/main.min.js"></script>
 </head>
 <body>
-    <iframe src="https://iframe.chat/embed?chat=89451785" id="chattable"></iframe>
-    <script>
+    <style>
+#chattable {
+  margin-left: auto;
+  margin-top: 0px;
+  width: 400px;
+  height: 300px;
+}
+</style>
+<iframe src="https://iframe.chat/embed?chat=89451785" id="chattable"></iframe>
+<script>
     chattable.initialize({
-        theme: "professional" // set the value to the name of the theme
+        stylesheet: "chattable.css"
     });
-    </script>
+</script>
 </body>
 </html>

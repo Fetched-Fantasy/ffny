@@ -1,0 +1,80 @@
+/* chattable.css */
+
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0;
+  height: 100vh; /* Make the chat take up the full height */
+  overflow: hidden; /* Prevent scrollbars on the main body, scroll within the chat area */
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.message-area {
+  flex-grow: 1;
+  padding: 10px;
+  overflow-y: auto; /* Enable vertical scrolling for messages */
+}
+
+.message {
+  margin-bottom: 5px;
+  padding: 8px;
+  border-radius: 5px;
+  background-color: #fff;
+  word-wrap: break-word; /* Prevent long words from breaking the layout */
+}
+
+.message .username {
+  font-weight: bold;
+  margin-right: 5px;
+  color: #007bff; /* Blue color for usernames */
+}
+
+.message .timestamp {
+  font-size: 0.8em;
+  color: #888;
+}
+
+.input-area {
+  padding: 10px;
+  border-top: 1px solid #ccc;
+  display: flex;
+}
+
+.input-area input[type="text"] {
+  flex-grow: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.input-area button {
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.input-area button:hover {
+  background-color: #0056b3;
+}
+/* Optional: Style the scrollbar (Webkit browsers like Chrome/Safari) */
+.message-area::-webkit-scrollbar {
+  width: 8px;
+}
+
+.message-area::-webkit-scrollbar-track {
+  background-color: #f0f0f0;
+}
+
+.message-area::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
