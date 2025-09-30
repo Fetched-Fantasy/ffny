@@ -1,26 +1,20 @@
-# This is an example agent configuration file
-# It is used to define custom AI agents within Continue
-# Each agent file can be accessed by selecting it from the agent dropdown
-
-# To learn more, see the full config.yaml reference: https://docs.continue.dev/reference
-
-name: Example Agent
-version: 1.0.0
+name: Gemini 2.5 Pro
+version: 1.0.5
 schema: v1
 
-# Models define which AI models this agent can use
-# https://docs.continue.dev/customization/models
 models:
-  - name: my gpt-5
-    provider: openai
-    model: gpt-5
-    apiKey: YOUR_OPENAI_API_KEY_HERE
-  - uses: ollama/qwen2.5-coder-7b
-  - uses: anthropic/claude-4-sonnet
-    with:
-      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-
-# MCP Servers the agent can use
-# https://docs.continue.dev/customization/mcp-tools
-mcpServers:
-  - uses: anthropic/memory-mcp
+  - name: Gemini 2.5 Pro
+    provider: gemini
+    model: gemini-2.5-pro
+    apiKey: ${{ inputs.AIzaSyBBh97ka2AYNnQBavZL7vOpQOuo-vtH21c }}
+    roles:
+      - chat
+      - edit
+      - apply
+    defaultCompletionOptions:
+      contextLength: 1048576
+      maxTokens: 65536
+    capabilities:
+      - tool_use
+      - image_input
+# TODO - once non-preview is out update this to use non-preview and add preview version
