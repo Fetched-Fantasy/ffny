@@ -81,3 +81,26 @@ const navContainer = document.querySelector(".nav-container");
 hamburger.addEventListener('click', () => {
  navContainer.classList.toggle('nav-active');
 });
+
+// index.js
+
+// GitHub raw URL for the changelog.json file
+const changelogUrl = 'https://raw.githubusercontent.com/your-username/your-repo/main/changelog.json'; // Replace with your actual URL
+const changeLogList = document.getElementById('change-log-list');
+
+// Fetch the changelog data from the raw GitHub URL
+fetch(changelogUrl)
+ .then(response => response.json())
+ .then(data => {
+ // Iterate over the data and generate the list items
+ data.forEach(entry => {
+ const li = document.createElement('li');
+ li.textContent = `[${entry.date}] - ${entry.description}`;
+ changeLogList.appendChild(li);
+ });
+ })
+ .catch(error => {
+ console.error('Error fetching changelog data:', error);
+ changeLogList.innerHTML = '<p>Failed to load change log.</p>';
+ });
+
