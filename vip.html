@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <title>VIP Area</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="FFNY VIP Area">
+    <meta property="og:description" content="A place for VIP users of FFNY to access exclusive content and features.">
+    <meta property="og:image" content="https://raw.githubusercontent.com/Fetched-Fantasy/ffny/refs/heads/main/Copilot_20250903_093151.png">
+    <meta property="og:url" content="https://fetched-fantasy.github.io/ffny/vip">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="https://raw.githubusercontent.com/Fetched-Fantasy/ffny/refs/heads/main/Copilot_20250903_093151.png" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>VIP Area</h1>
+
+        <div id="password-form">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password">
+            <button id="submit-password">Enter</button>
+            <p id="password-error" style="color: red; display: none;">Incorrect password.</p>
+        </div>
+
+        <div id="vip-content" style="display: none;">
+            <section class="vip-section">
+                <h2>Exclusive Content</h2>
+                <div class="vip-box">
+                    <p>This is a special box for VIP content. Add text, images, or anything else here!</p>
+                </div>
+            </section>
+
+            <section class="vip-section">
+                <h2>VIP Announcements</h2>
+                <div class="vip-box">
+                    <p>Important announcements for our VIP members will be posted here.</p>
+                </div>
+            </section>
+
+            <section class="vip-section">
+                <h2>VIP Perks</h2>
+                <div class="vip-box">
+                    <p>Check out these awesome perks for being a VIP member!</p>
+                </div>
+            </section>
+        </div>
+    </div>
+    <script>
+        const passwordForm = document.getElementById('password-form');
+        const vipContent = document.getElementById('vip-content');
+        const passwordInput = document.getElementById('password');
+        const submitPasswordButton = document.getElementById('submit-password');
+        const passwordError = document.getElementById('password-error');
+        const correctPassword = 'ffn2ysVIP4yOu'; // Replace with your actual password
+
+        // Check if password is in localStorage
+        if (localStorage.getItem('vipPassword') === correctPassword) {
+            passwordForm.style.display = 'none';
+            vipContent.style.display = 'block';
+        } else {
+            passwordForm.style.display = 'block';
+            vipContent.style.display = 'none';
+        }
+
+        submitPasswordButton.addEventListener('click', function() {
+            const enteredPassword = passwordInput.value;
+            if (enteredPassword === correctPassword) {
+                localStorage.setItem('vipPassword', correctPassword);
+                passwordForm.style.display = 'none';
+                vipContent.style.display = 'block';
+            } else {
+                passwordError.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
