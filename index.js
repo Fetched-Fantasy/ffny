@@ -85,7 +85,7 @@ hamburger.addEventListener('click', () => {
 // index.js
 
 // GitHub raw URL for the changelog.json file
-const changelogUrl = 'https://raw.githubusercontent.com/your-username/your-repo/main/changelog.json'; // Replace with your actual URL
+const changelogUrl = 'https://raw.githubusercontent.com/Fetched-Fantasy/ffny/main/changelog.json'; // Replace with your actual URL
 const changeLogList = document.getElementById('change-log-list');
 
 // Fetch the changelog data from the raw GitHub URL

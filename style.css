@@ -443,5 +443,11 @@ body, html {
     gap: 10px;
     flex-direction: column;
     align-items: flex-end; /* Align items to the right */
+ max-width: 200px; /* Prevent overflow */
+}
+
+.top-right-buttons a {
+  display: block; /* Ensure each button takes its own line */
+  white-space: nowrap; /* Prevent text from wrapping */
 }
 
