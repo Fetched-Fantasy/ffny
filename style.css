@@ -36,33 +36,41 @@ body, html {
 }
 
 .header {
-  background-color: rgba(34, 34, 34, 0.7); /* Semi-transparent dark gray */
-  padding: 10px;
+    display: flex; /* Use flexbox */
+    justify-content: space-between; /* Distribute space between title and nav */
+    align-items: center; /* Vertically align items */
+    background-color: rgba(34, 34, 34, 0.7);
+    padding: 10px 20px; /* Add some padding */
   text-align: center;
   position: relative;
   color: #ddd;
-  font-family: serif; /* Example font */
-  text-transform: uppercase; /* Make it uppercase */
-  letter-spacing: 0.1em; /* Space the letters */
-  backdrop-filter: blur(5px); /* Apply blur to the content behind */
+    font-family: serif;
+  text-transform: uppercase;
+    letter-spacing: 0.1em;
+    backdrop-filter: blur(5px);
 }
 
-.nav-container {
-  position: relative;
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.header h1 {
+    flex-grow: 1; /* Allow the title to take up remaining space */
+    text-align: center; /* Center the title */
+    margin: 0; /* Remove default margin */
 }
 
-.nav {
-  margin-top: 10px;
-  display: flex;
-  padding: 0;
-  list-style: none;
-  width: auto;
+ .nav-container {
+    position: relative;
+    margin: 0; /* Remove auto margins */
+    display: flex;
+    justify-content: flex-start; /* Align navigation to the left */
+    align-items: center;
+    width: auto; /* Remove width */
 }
-
+ .nav {
+    margin-top: 0; /* Remove top margin */
+    display: flex;
+    padding: 0;
+    list-style: none;
+    width: auto; /* Remove width */
+ }
 .nav a {
   color: white;
   text-decoration: none;
@@ -380,32 +388,40 @@ body, html {
  .nav-active {
  transform: translateX(0%);
  }
- @media (max-width: 768px) {
- .hamburger {
- display: block;
- position: absolute;
- top: 0;
- right: 0;
- }
- .nav-container {
- position: fixed;
- top: 0;
- left: 0;
- height: 100%;
- width: 250px;
- background-color: rgba(0, 21, 42, 0.9);
- transform: translateX(-100%);
- transition: transform 0.3s ease-in-out;
- padding-top: 60px;
- z-index: 1000;
- }
- .nav {
- flex-direction: column;
- align-items: flex-start;
- padding-left: 20px;
- }
- .nav li {
- margin: 1rem 0;
- }
- }
+
+/* Adjustments for smaller screens (Hamburger menu) */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column; /* Stack title and hamburger */
+        align-items: center; /* Center items */
+    }
+
+    .hamburger {
+        position: static; /* Reset positioning */
+        margin-left: auto; /* Push to right */
+    }
+
+    .nav-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 250px;
+        background-color: rgba(0, 21, 42, 0.9);
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        padding-top: 60px;
+        z-index: 1000;
+    }
+
+    .nav {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-left: 20px;
+    }
+
+    .nav li {
+        margin: 1rem 0;
+    }
+}
 
