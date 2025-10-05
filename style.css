@@ -436,18 +436,16 @@ body, html {
 }
 
 .top-right-buttons {
-    position: absolute;
-    top: 10px;
-    right: 10px;
     display: flex;
-    gap: 10px;
-    flex-direction: column;
-    align-items: flex-end; /* Align items to the right */
- max-width: 200px; /* Prevent overflow */
+ gap: 5px;
+ justify-content: flex-end; /* Align to the right */
+ /* position: absolute; */
+ /* top: 10px; */
+ /* right: 10px; */
 }
 
 .top-right-buttons a {
-  display: block; /* Ensure each button takes its own line */
-  white-space: nowrap; /* Prevent text from wrapping */
+ font-size: 0.8em; /* Smaller text */
+ padding: 5px 10px; /* Smaller buttons */
 }
 
