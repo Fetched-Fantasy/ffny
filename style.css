@@ -363,3 +363,49 @@ body, html {
     border-radius: 8px;
     color: #fff;
 }
+
+/* Hamburger Menu Styles */
+.hamburger {
+ display: none;
+ cursor: pointer;
+ padding: 15px;
+ }
+ .hamburger .line {
+ width: 25px;
+ height: 3px;
+ background-color: white;
+ margin: 5px auto;
+ transition: all 0.3s ease-in-out;
+ }
+ .nav-active {
+ transform: translateX(0%);
+ }
+ @media (max-width: 768px) {
+ .hamburger {
+ display: block;
+ position: absolute;
+ top: 0;
+ right: 0;
+ }
+ .nav-container {
+ position: fixed;
+ top: 0;
+ left: 0;
+ height: 100%;
+ width: 250px;
+ background-color: rgba(0, 21, 42, 0.9);
+ transform: translateX(-100%);
+ transition: transform 0.3s ease-in-out;
+ padding-top: 60px;
+ z-index: 1000;
+ }
+ .nav {
+ flex-direction: column;
+ align-items: flex-start;
+ padding-left: 20px;
+ }
+ .nav li {
+ margin: 1rem 0;
+ }
+ }
+

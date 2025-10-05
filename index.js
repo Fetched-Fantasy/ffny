@@ -73,3 +73,11 @@ toggleBtn.addEventListener("click", () => {
     toggleBtn.textContent = "Hide Profiles";
   }
 });
+
+// ADDED CODE
+const hamburger = document.querySelector(".hamburger");
+const navContainer = document.querySelector(".nav-container");
+
+hamburger.addEventListener('click', () => {
+ navContainer.classList.toggle('nav-active');
+});
