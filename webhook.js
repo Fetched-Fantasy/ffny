@@ -4,13 +4,15 @@
  const title = document.getElementById('webhook-title').value;
  const imageUrl = document.getElementById('webhook-image-url').value;
  const authorName = document.getElementById('webhook-author').value;
+ const color = document.getElementById('webhook-color').value;
+ const colorInt = parseInt(color.slice(1), 16);
 
 
  const data = {
  embeds: [{
  title: title,
  description: message,
- color: 8388608, // Purple color code
+ color: colorInt, // The part that was changed
  author: {
  name: authorName
  },
