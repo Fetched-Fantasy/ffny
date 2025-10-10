@@ -28,15 +28,21 @@
         </div>
     </div>
     <!-- Create a section in the html file -->
+    <section id="change-log" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); width: 250px; background: rgba(0, 0, 0, 0.5); padding: 20px; border-radius: 10px; color: white;">
+        <h2>Change Log</h2>
+        <ul id="change-log-list">
+        </ul>
+    </section>
+
+    <div class="form">
     <input type="text" id="webhook-url" placeholder="Enter Discord Webhook URL">
     <input type="text" id="webhook-message" placeholder="Enter Message">
-    <button id="webhook-button">Send Message</button>
-
     <input type="text" id="webhook-title" placeholder="Enter Title">
     <input type="text" id="webhook-image-url" placeholder="Enter Image URL">
-
     <input type="text" id="webhook-author" placeholder="Enter Author">
+        <button id="webhook-button">Send Message</button>
     <script src="webhook.js"></script>
+    </div>
 </body>
 </html>
 

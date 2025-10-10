@@ -449,3 +449,31 @@ body, html {
  padding: 5px 10px; /* Smaller buttons */
 }
 
+.form {
+ display: flex;
+ flex-direction: column;
+ width: 50%;
+ color: black;
+ }
+ #webhook-url, #webhook-message, #webhook-title, #webhook-image-url, #webhook-author {
+ width: 100%;
+ padding: 8px;
+ margin-bottom: 10px;
+ border: 1px solid #ccc;
+ border-radius: 4px;
+ box-sizing: border-box; /* Ensures padding is included in the width */
+ color: black; /* Ensures text is visible */
+ }
+
+ #webhook-button {
+ background-color: #4CAF50;
+ color: white;
+ padding: 10px 15px;
+ border: none;
+ border-radius: 4px;
+ cursor: pointer;
+ }
+ #webhook-button:hover {
+ background-color: #45a049;
+ }
+
