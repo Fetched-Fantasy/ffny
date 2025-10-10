@@ -90,4 +90,5 @@ hljs.highlightAll();
 }
 
 //add functions
-document.getElementById('webhook-button').addEventListener('click', generateCode);
+//document.getElementById('webhook-button').addEventListener('click', generateCode);
+
