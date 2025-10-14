@@ -59,7 +59,6 @@
 <body>
   <div class="parallax">
     <div class="sidebar">
-      <div class="sidebar collapsed">
       <button class="sidebar-toggle">☰</button>
       <ul class="nav sidebar-nav">
           <li><a href="">Home</a></li>
@@ -110,11 +109,11 @@
   </div>
   </div>
   </div>
-  <script>
+ <script>
     document.addEventListener('DOMContentLoaded', function() {
       document.querySelector('.sidebar-toggle').addEventListener('click', function() {
-        document.querySelector('.sidebar').classList.toggle('collapsed');
-        document.querySelector('.parallax').classList.toggle('collapsed');
+        document.querySelector('.sidebar').classList.toggle('expanded');
+        document.querySelector('.parallax').classList.toggle('expanded');
       });
     });
   </script>

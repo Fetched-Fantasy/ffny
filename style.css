@@ -126,10 +126,27 @@ a:hover {
 .sidebar.collapsed {
     transform: translateX(-100%); /* Hide the sidebar */
     text-align: left; /* Align the title to the left */
+
+.header h1 {
+    flex-grow: 1; /* Prevent the title from taking up remaining space */
+    text-align: left; /* Align the title to the left */
     margin: 0; /* Remove default margin */
     font-size: 2rem;
     font-weight: 700;
     margin-left: 3rem; /* Add margin to the left of the title */
+}
+
+.parallax {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    margin-left: 250px; /* Make space for the sidebar */
+    transition: margin-left 0.3s ease-in-out;
+}
+
+.parallax.collapsed {
+    margin-left: 0; /* Restore original margin */
+}
 }
 
 /* Navigation */
