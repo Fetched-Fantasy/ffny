@@ -101,11 +101,10 @@ a:hover {
     padding: 10px;
     font-size: 20px;
     cursor: pointer;
-    margin-bottom: 20px;
     position: absolute; /* Position the toggle button */
+    top: 0.5rem; /* Distance from the top edge */
     left: 0.5rem; /* Distance from the left edge */
-    top: 50%; /* Center vertically */
-    transform: translateY(-50%); /* Adjust vertical centering */
+    transform: none; /* Remove vertical centering */
     z-index: 10; /* Ensure it's above other elements */
     color: #fff; /* Ensure the text color is white */
 }
@@ -182,8 +181,8 @@ a:hover {
   position: relative;
   height: 100%;
   overflow: hidden;
-    margin-left: 0; /*Added to override existing styles*/
-    transition: margin-left 0.3s ease-in-out; /*Added to override existing styles*/
+    margin-left: 0; /* Make space for the sidebar */
+    transition: margin-left 0.3s ease-in-out;
 }
 
 .parallax.contact-page {
