@@ -117,15 +117,16 @@ a:hover {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.8);
     padding: 20px;
-    overflow-y: auto; /* Enable scrolling if content overflows */
+    overflow-y: auto;
     transition: transform 0.3s ease-in-out;
-    transform: translateX(0%); /* Initially hidden */
+    transform: translateX(-100%); /* Initially hidden */
     z-index: 1000;
-    color: #fff; /* Ensure the text color is white */
+    color: #fff;
 }
+
 .sidebar.collapsed {
-    transform: translateX(-100%); /* Hide the sidebar */
-    text-align: left; /* Align the title to the left */
+    transform: translateX(0%); /* Show the sidebar */
+}
 
 .header h1 {
     flex-grow: 1; /* Prevent the title from taking up remaining space */
@@ -135,18 +136,16 @@ a:hover {
     font-weight: 700;
     margin-left: 3rem; /* Add margin to the left of the title */
 }
-
 .parallax {
     position: relative;
     height: 100%;
     overflow: hidden;
-    margin-left: 250px; /* Make space for the sidebar */
+    margin-left: 0; /* Make space for the sidebar */
     transition: margin-left 0.3s ease-in-out;
 }
 
 .parallax.collapsed {
-    margin-left: 0; /* Restore original margin */
-}
+    margin-left: 250px; /* Restore original margin */
 }
 
 /* Navigation */
