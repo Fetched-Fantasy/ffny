@@ -87,14 +87,16 @@ a:hover {
     backdrop-filter: blur(5px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   margin-bottom: 2rem;
+  position: relative; /* Add relative positioning */
 }
 
 .header h1 {
-    flex-grow: 0; /* Prevent the title from taking up remaining space */
+    flex-grow: 1; /* Prevent the title from taking up remaining space */
     text-align: left; /* Align the title to the left */
     margin: 0; /* Remove default margin */
     font-size: 2rem;
     font-weight: 700;
+    margin-left: 3rem; /* Add margin to the left of the title */
 }
 
 /* Navigation */
@@ -496,6 +498,11 @@ footer {
     font-size: 20px;
     cursor: pointer;
     margin-bottom: 20px;
+    position: absolute; /* Position the toggle button */
+    left: 0.5rem; /* Distance from the left edge */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Adjust vertical centering */
+    z-index: 10; /* Ensure it's above other elements */
 }
 
 .sidebar-nav {
