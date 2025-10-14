@@ -85,7 +85,38 @@ hamburger.addEventListener('click', () => {
 // index.js
 
 // GitHub raw URL for the changelog.json file
+// index.js
+
+// GitHub raw URL for the changelog.json file
 const changelogUrl = 'https://raw.githubusercontent.com/Fetched-Fantasy/ffny/main/changelog.json'; // Replace with your actual URL
+const changeLogList = document.getElementById('change-log-list');
+
+// Function to format the date as MM-DD-YYYY
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${month}-${day}-${year}`;
+}
+
+// Fetch the changelog data from the raw GitHub URL
+fetch(changelogUrl)
+ .then(response => response.json())
+ .then(data => {
+ // Iterate over the data and generate the list items
+ data.forEach(entry => {
+ const li = document.createElement('li');
+ // Format the date using the formatDate function
+ const formattedDate = formatDate(entry.date);
+ li.textContent = `[${formattedDate}] - ${entry.description}`;
+ changeLogList.appendChild(li);
+ });
+ })
+ .catch(error => {
+ console.error('Error fetching changelog data:', error);
+ changeLogList.innerHTML = '<p>Failed to load change log.</p>';
+ });
 const changeLogList = document.getElementById('change-log-list');
 
 // Fetch the changelog data from the raw GitHub URL
