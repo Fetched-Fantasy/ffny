@@ -92,6 +92,40 @@ a:hover {
 
 .header h1 {
     flex-grow: 1; /* Prevent the title from taking up remaining space */
+}
+
+.sidebar-toggle {
+    background: none;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    position: absolute; /* Position the toggle button */
+    left: 0.5rem; /* Distance from the left edge */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Adjust vertical centering */
+    z-index: 10; /* Ensure it's above other elements */
+    color: #fff; /* Ensure the text color is white */
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    overflow-y: auto; /* Enable scrolling if content overflows */
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(0%); /* Initially hidden */
+    z-index: 1000;
+    color: #fff; /* Ensure the text color is white */
+}
+.sidebar.collapsed {
+    transform: translateX(-100%); /* Hide the sidebar */
     text-align: left; /* Align the title to the left */
     margin: 0; /* Remove default margin */
     font-size: 2rem;
@@ -470,39 +504,6 @@ footer {
   padding: 1rem;
   text-align: center;
   margin-top: 2rem; /* Push footer to the bottom */
-}
-
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 250px;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    padding: 20px;
-    overflow-y: auto; /* Enable scrolling if content overflows */
-    transition: transform 0.3s ease-in-out;
-    transform: translateX(-100%); /* Initially visible */
-    z-index: 1000;
-}
-
-.sidebar.collapsed {
-    transform: translateX(0%); /* Hide the sidebar */
-}
-
-.sidebar-toggle {
-    background: none;
-    color: white;
-    border: none;
-    padding: 10px;
-    font-size: 20px;
-    cursor: pointer;
-    margin-bottom: 20px;
-    position: absolute; /* Position the toggle button */
-    left: 0.5rem; /* Distance from the left edge */
-    top: 50%; /* Center vertically */
-    transform: translateY(-50%); /* Adjust vertical centering */
-    z-index: 10; /* Ensure it's above other elements */
 }
 
 .sidebar-nav {
