@@ -85,10 +85,7 @@ hamburger.addEventListener('click', () => {
 // index.js
 
 // GitHub raw URL for the changelog.json file
-// index.js
-
-// GitHub raw URL for the changelog.json file
-const changelogUrl = 'https://raw.githubusercontent.com/Fetched-Fantasy/ffny/refs/heads/main/changelog.json'; // Replace with your actual URL
+const changelogUrl = 'https://raw.githubusercontent.com/Fetched-Fantasy/ffny/main/changelog.json'; // Replace with your actual URL
 const changeLogList = document.getElementById('change-log-list');
 
 // Function to format the date as MM-DD-YYYY
@@ -102,31 +99,19 @@ function formatDate(dateString) {
 
 // Fetch the changelog data from the raw GitHub URL
 fetch(changelogUrl)
- .then(response => response.json())
+ .then(response => {
+  console.log("Changelog response:", response);
+  return response.json();
+})
  .then(data => {
+  console.log("Changelog data:", data);
  // Iterate over the data and generate the list items
  data.forEach(entry => {
+  console.log("Changelog entry:", entry);
  const li = document.createElement('li');
  // Format the date using the formatDate function
  const formattedDate = formatDate(entry.date);
  li.textContent = `[${formattedDate}] - ${entry.description}`;
- changeLogList.appendChild(li);
- });
- })
- .catch(error => {
- console.error('Error fetching changelog data:', error);
- changeLogList.innerHTML = '<p>Failed to load change log.</p>';
- });
-const changeLogList = document.getElementById('change-log-list');
-
-// Fetch the changelog data from the raw GitHub URL
-fetch(changelogUrl)
- .then(response => response.json())
- .then(data => {
- // Iterate over the data and generate the list items
- data.forEach(entry => {
- const li = document.createElement('li');
- li.textContent = `[${entry.date}] - ${entry.description}`;
  changeLogList.appendChild(li);
  });
  })
