@@ -7,14 +7,14 @@
 
 /* Variables - keeping the existing color scheme in mind */
 :root {
-  --main-bg-color: rgba(0, 21, 42, 0.5); /* Example: Dark blue-ish, adjust based on your current colors */
-  --text-color: #fff; /* White */
-  --accent-color: #66b3ff; /* Example: Light blue, adjust based on your current colors */
+  --main-bg-color: #36393f; /* Discord Dark Gray */
+  --text-color: #dcddde; /* Discord Light Gray */
+  --accent-color: #7289da; /* Discord Blurple */
 }
 
 body, html {
   height: 100%;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif; /* Modern system font stack */
+  font-family: Roboto, sans-serif; /* Modern system font stack */
   color: var(--text-color); /* Use variable */
   line-height: 1.6;
   /*background-image: url("https://raw.githubusercontent.com/Fetched-Fantasy/ffny/main/Copilot_20250903_093151.png");*/
@@ -76,7 +76,7 @@ a:hover {
  display: flex;
     justify-content: space-between; /* Distribute space between title and nav */
     align-items: center; /* Vertically align items */
-  background-color: rgba(34, 34, 34, 0.7);
+  background-color: rgba(34, 34, 34, 0.8);
     padding: 0.5rem 2rem; /* Reduced padding */
   text-align: center;
   position: relative;
@@ -237,13 +237,12 @@ a:hover {
 
 .discord-link,
 .vrchat-link {
-  display: inline-flex; /* Changed to inline-flex */
-  align-items: center; /* Vertically center the image */
-  padding: 0.75rem 1.5rem;
-  margin: 0 0.75rem;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  margin: 0 0.5rem;
+  color: var(--text-color);
+  border-radius: 4px;
   gap: 0.5rem; /* Space between image and text */
   transition: background-color 0.2s ease-in-out;
 }
@@ -415,19 +414,6 @@ a:hover {
     color: #fff;
 }
 
-/* Hamburger Menu Styles */
-.hamburger {
- display: none;
- cursor: pointer;
- padding: 15px;
- }
- .hamburger .line {
- width: 25px;
- height: 3px;
- background-color: white;
- margin: 5px auto;
- transition: all 0.3s ease-in-out;
- }
  .nav-active {
  transform: translateX(0%);
  }
@@ -437,11 +423,6 @@ a:hover {
     .header {
         flex-direction: column; /* Stack title and hamburger */
         align-items: center; /* Center items */
-    }
-
-    .hamburger {
-        position: static; /* Reset positioning */
-        margin-left: auto; /* Push to right */
     }
 
     .nav-container {
@@ -516,53 +497,9 @@ footer {
   margin-top: 2rem; /* Push footer to the bottom */
 }
 
-.sidebar-nav {
-    list-style: none;
-    padding: 0;
-}
-
-.sidebar-nav li {
-    margin-bottom: 10px;
-}
-
-.sidebar-nav a {
-    display: block;
-    color: white;
-    text-decoration: none;
-    padding: 10px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-.sidebar-nav a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
 /* Adjust main content area */
 .parallax {
     margin-left: 0; /* Make space for the sidebar */
     transition: margin-left 0.3s ease-in-out;
-}
-
-.parallax.collapsed {
-    margin-left: 250px; /* Restore original margin */
-}
-
-#chat-display {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 10px;
-  height: 300px;
-  overflow-y: scroll;
-}
-
-#message-input {
-  width: 70%;
-  padding: 5px;
-  margin-right: 10px;
-}
-
-#send-button {
-  padding: 5px 10px;
 }
 
