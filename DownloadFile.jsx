@@ -29,4 +29,4 @@ const DownloadFile = () => {
   );
 };
 
-export default DownloadFile; 
+export default DownloadFile;
