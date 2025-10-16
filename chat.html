@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <title>Chat</title>
+  <!-- Existing metadata -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta property="og:title" content="FFNY Chatroom">
@@ -26,17 +27,12 @@
     <div class="parallax">
         <div class="header">
             <h1>Chat</h1>
-            <div class="nav-container">
-                <ul class="nav">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="about">About</a></li>
-                    <li><a href="events">Events</a></li>
-                    <li><a href="https://ffny.on.spiceworks.com/portal/">Contact</a></li>
-                </ul>
+  <div id="chat-display"></div>
+  <div>
+    <input type="text" id="message-input">
+    <button id="send-button">Send</button>
             </div>
-            <!-- Chatango embed script should be outside the header div and without inline style attribute -->
-        </div>
-        <script id="cid0020000420229973871" data-cfasync="false" async src="//st.chatango.com/js/gz/emb.js"></script>
-    </div>
+  <script src="chat.js"></script>
 </body>
 </html>
+

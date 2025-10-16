@@ -1,0 +1,8 @@
+name = "chat-worker"
+type = "javascript"
+account_id = "4f2efd3167de27a12274f4bf13580e62"
+workers_dev = true
+route = "ffny.fetched.workers.dev/*"
+kv_namespaces = [
+  { binding = "chat-asset", id = "0c2828e763d948fcb5c98121c97dcb3f" }
+]
