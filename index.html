@@ -46,36 +46,25 @@
   </script>
   <link rel="stylesheet" href="style.css">
 
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BY4KC1P2F8"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-BY4KC1P2F8');
   </script>
-
 <!-- Clarity tracking code for https://ffny.pages.dev/ -->
 <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
         t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window, document, "clarity", "script", "tq3b62k0oe");
 </script>
-
 </head>
 <body>
   <div class="parallax">
     <div class="sidebar">
       <button class="sidebar-toggle">☰</button>
-      <ul class="nav sidebar-nav">
-          <li><a href="">Home</a></li>
-          <li><a href="about">About</a></li>
-          <li><a href="events">Events</a></li>
-          <li><a href="https://ffny.on.spiceworks.com/portal/">Contact</a></li>
-        </ul>
       </div>
     <div class="header">
       <h1>Fetched Fantasy</h1>
@@ -84,36 +73,44 @@
         <div class="line"></div>
         <div class="line"></div>
     </div>
-    </div>
-    <section id="change-log" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); width: 250px; background: rgba(0, 0, 0, 0.5); padding: 20px; border-radius: 10px; color: white;">
-    <h2>Change Log</h2>
-    <ul id="change-log-list">
-        <!-- Change log entries will be dynamically generated here -->
-    </ul>
-    <script src="https://fetchedfantasy.statuspage.io/embed/script.js"></script>
-</section>
-    <div class="container">
-          <div class="top-right-buttons">
-      <a href="https://discord.gg/5MZyyq3MSw" class="discord-link" target="_blank">Our Discord server!</a>
-      <a href="https://vrchat.com/home/group/grp_e219fa60-9a36-45f2-a5c9-cd848ce0f6ed" class="vrchat-link" target="_blank">Our VRChat group!</a>
-    </div>
-    <!-- Reusable Modal -->
-    <div id="profileModal" class="modal">
-      <div class="modal-content">
-        <span class="close" onclick="closeProfileModal()">&times;</span>
-        <div class="modal-left">
-          <img id="modalImage" src="" alt="">
-          <p id="modalDescription"></p>
         </div>
-        <div class="modal-right">
-          <h2 id="modalName"></h2>
-          <p><strong>Rank:</strong> <span id="modalRole"></span></p>
-          <p><strong>Department:</strong> <span id="modalDept"></span></p>
-          <p><strong>Job:</strong> <span id="modalJob"></span></p>
+    <div class="nav-container">
+      <ul class="nav">
+        <li><a href="">Home</a></li>
+        <li><a href="about">About</a></li>
+        <li><a href="events">Events</a></li>
+        <li><a href="https://ffny.on.spiceworks.com/portal/">Contact</a></li>
+        <Li><a href="https://ffnystatus.statuspage.io/">Status</a></Li>
+      </ul>
+  </div>
+    <section id="change-log" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); width: 250px; background: rgba(0, 0, 0, 0.5); padding: 20px; border-radius: 10px; color: white;">
+      <h2>Change Log</h2>
+      <ul id="change-log-list">
+        <!-- Change log entries will be dynamically generated here -->
+      </ul>
+    </section>
+    <div class="container">
+      <div class="top-right-buttons">
+        <a href="https://discord.gg/5MZyyq3MSw" class="discord-link" target="_blank">Our Discord server!</a>
+        <a href="https://vrchat.com/home/group/grp_e219fa60-9a36-45f2-a5c9-cd848ce0f6ed" class="vrchat-link" target="_blank">Our VRChat group!</a>
+  </div>
+      <!-- Reusable Modal -->
+      <div id="profileModal" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="closeProfileModal()">&times;</span>
+          <div class="modal-left">
+            <img id="modalImage" src="" alt="">
+            <p id="modalDescription"></p>
+  </div>
+          <div class="modal-right">
+            <h2 id="modalName"></h2>
+            <p><strong>Rank:</strong> <span id="modalRole"></span></p>
+            <p><strong>Department:</strong> <span id="modalDept"></span></p>
+            <p><strong>Job:</strong> <span id="modalJob"></span></p>
   </div>
   </div>
-  </div>
-  </div>
+      </div>
+    </div>
  <script>
     document.addEventListener('DOMContentLoaded', function() {
       document.querySelector('.sidebar-toggle').addEventListener('click', function() {
