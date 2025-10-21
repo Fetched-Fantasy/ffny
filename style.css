@@ -224,6 +224,35 @@ a:hover {
   margin-bottom: 2rem;
 }
 
+.about-me hr {
+        margin: 1rem 0;
+    }
+
+.about-me h3 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.other-links {
+ display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+ }
+
+.other-link-box {
+  display: block;
+  padding: 0.5rem 1rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+ color: white;
+  text-decoration: none;
+  transition: background-color 0.2s ease-in-out;
+ }
+
+.other-link-box:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+ }
+
 /* Buttons */
 .button-container {
   margin-top: auto; /* Push to the bottom */
