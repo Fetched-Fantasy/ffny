@@ -71,14 +71,13 @@ a:hover {
 /* Header */
 .header {
  display: flex;
-  justify-content: space-between;
-    align-items: center;
+  flex-direction: column; /* Stack title and navigation */
+  align-items: center; /* Center items horizontally */
   background-color: rgba(34, 34, 34, 0.8);
   padding: 0.5rem 2rem;
   text-align: center;
   position: relative;
   color: #ddd;
-  /* font-family: serif;  Removed serif font */
   text-transform: uppercase;
   letter-spacing: 0.1em;
   backdrop-filter: blur(5px);
@@ -142,12 +141,13 @@ a:hover {
 
 /* Navigation */
 .nav-container {
+  width: 100%; /* Make navigation full-width */
+  justify-content: center; /* Center navigation items */
+  margin-top: 1rem; /* Add some spacing between title and navigation */
     position: relative;
     margin: 0; /* Remove auto margins */
     display: flex;
-    justify-content: flex-start; /* Align navigation to the left */
     align-items: center;
-    width: auto; /* Remove width */
 }
  .nav {
     margin-top: 0; /* Remove top margin */
@@ -206,11 +206,11 @@ a:hover {
   width: 100%;
   height: 100%;
   /* background-image: url("https://raw.githubusercontent.com/Fetched-Fantasy/ffny/main/Copilot_20250903_093151.png"); */
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  filter: blur(5px);
+  /*background-attachment: fixed;*/
+  /*background-position: center;*/
+  /*background-repeat: no-repeat;*/
+  /*background-size: cover;*/
+  /*filter: blur(5px);*/
   z-index: -1;
 }
 
@@ -501,7 +501,7 @@ footer {
 }
 
 .top-right-buttons {
-  position: absolute;
+  /*position: absolute;*/
   bottom: 1rem;
   right: 1rem;
   display: flex;
