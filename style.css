@@ -265,12 +265,16 @@ a:hover {
 .vrchat-link {
   display: inline-flex;
   align-items: center;
-  padding: 0.5rem 1rem;
-  margin: 0 0.5rem;
+  padding: 0.4rem 0.6rem;
+  margin: 0;
   color: var(--text-color);
   border-radius: 4px;
   gap: 0.5rem; /* Space between image and text */
   transition: background-color 0.2s ease-in-out;
+  width: 140px;
+  justify-content: center;
+  text-align: center;
+  font-size: 0.92rem;
 }
 
 .discord-link:hover {
@@ -530,22 +534,16 @@ footer {
 }
 
 .top-right-buttons {
-  /*position: absolute;*/
-  bottom: 1rem;
-  right: 1rem;
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
+  gap: 1rem;
+  justify-content: center;
+  z-index: 1000;
 }
 
-body#interaction-page .fill-screen-canvas {
- position: absolute;
- left: 0;
- width: 100%;
-  top: 0px;
-  height: 100vh; /* Subtract header height */
-  background-color: transparent;
-}
-
-/* Toast notification styles */
 .toast-notification {
     position: fixed;
     bottom: 20px;
@@ -554,7 +552,6 @@ body#interaction-page .fill-screen-canvas {
     color: white;
     padding: 16px 24px;
     border-radius: 4px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     display: none;
     z-index: 1000;
     animation: slideIn 0.5s ease-in-out;
