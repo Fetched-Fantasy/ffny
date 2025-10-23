@@ -20,13 +20,18 @@
     margin-top: 0;
     margin-bottom: 10px;
 }
+.object-list-wrapper {
+    margin-left: 0px;
+    padding-left: 0px;
+    width: 100%;
+}
 .object-list {
     max-height: 200px;
     overflow-y: auto;
     margin-bottom: 10px;
-    margin-left: 0px; /* Add this */
-    padding-left: 0px; /* Add this */
-    width: 100%; /* Add this */
+    /*margin-left: 0px;*/
+    /*padding-left: 0px;*/
+    /*width: 100%;*/
 }
 .object-item {
     display: flex;
