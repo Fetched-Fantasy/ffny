@@ -946,7 +946,73 @@ function hidePause() {
     updateLockHint();
 }
 
-// Toggle on Escape
+// World Menu functionality
+var worldMenuOpen = false;
+function showWorldMenu() {
+    if (worldMenuOpen) return;
+    worldMenuOpen = true;
+    const worldMenuOverlay = document.getElementById('worldMenuOverlay');
+    if (worldMenuOverlay) {
+        // Load available worlds into in-game world select
+        loadInGameWorldList();
+        worldMenuOverlay.style.display = 'flex';
+        worldMenuOverlay.setAttribute('aria-hidden', 'false');
+    }
+    try { engine.stopRenderLoop(); } catch (e) {}
+}
+
+function hideWorldMenu() {
+    if (!worldMenuOpen) return;
+    worldMenuOpen = false;
+    const worldMenuOverlay = document.getElementById('worldMenuOverlay');
+    if (worldMenuOverlay) {
+        worldMenuOverlay.style.display = 'none';
+        worldMenuOverlay.setAttribute('aria-hidden', 'true');
+    }
+    try { engine.runRenderLoop(function () { scene.render(); }); } catch (e) {}
+    updateLockHint();
+}
+
+function toggleWorldMenu() {
+    if (worldMenuOpen) hideWorldMenu(); else showWorldMenu();
+}
+
+function loadInGameWorldList() {
+    const worldSelect = document.getElementById('inGameWorldSelect');
+    if (!worldSelect) return;
+    
+    const worldsString = localStorage.getItem('ffny.worlds') || '[]';
+    const worlds = JSON.parse(worldsString);
+    const homeWorld = localStorage.getItem('ffny.homeWorld');
+    
+    // Clear existing options except default and home
+    while (worldSelect.options.length > 2) {
+        worldSelect.remove(2);
+    }
+    
+    // Update home world option
+    if (homeWorld) {
+        const homeWorldData = worlds.find(w => w.name === homeWorld);
+        if (homeWorldData) {
+            worldSelect.querySelector('option[value="home"]').textContent = 'My Home World: ' + homeWorld;
+            worldSelect.querySelector('option[value="home"]').style.display = '';
+        } else {
+            worldSelect.querySelector('option[value="home"]').style.display = 'none';
+        }
+    } else {
+        worldSelect.querySelector('option[value="home"]').style.display = 'none';
+    }
+    
+    // Add published worlds
+    worlds.filter(w => w.published && w.name !== homeWorld).forEach(world => {
+        const option = document.createElement('option');
+        option.value = world.name;
+        option.textContent = world.name;
+        worldSelect.appendChild(option);
+    });
+}
+
+// Toggle menus on Escape and E
 window.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
         // If pointer is locked, unlock first (user expects Escape to release pointer)
@@ -959,6 +1025,8 @@ window.addEventListener('keydown', function (e) {
         }
 
         if (isPaused) hidePause(); else showPause();
+    } else if (e.key === 'e' || e.key === 'E') {
+        toggleWorldMenu();
     }
 });
 
@@ -1038,5 +1106,58 @@ if (backFromSettingsBtn) {
     backFromSettingsBtn.addEventListener('click', function () {
         var settingsPanel = document.getElementById('settingsPanel');
         if (settingsPanel) settingsPanel.style.display = 'none';
+    });
+}
+
+// World Menu button handlers
+const switchWorldBtn = document.getElementById('switchWorldBtn');
+const closeWorldMenuBtn = document.getElementById('closeWorldMenuBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+
+if (switchWorldBtn) {
+    switchWorldBtn.addEventListener('click', function() {
+        const worldSelect = document.getElementById('inGameWorldSelect');
+        const selectedWorld = worldSelect.value;
+        let worldData = null;
+        
+        if (selectedWorld === 'home') {
+            const homeWorldName = localStorage.getItem('ffny.homeWorld');
+            if (homeWorldName) {
+                const worldsString = localStorage.getItem('ffny.worlds') || '[]';
+                const worlds = JSON.parse(worldsString);
+                worldData = worlds.find(w => w.name === homeWorldName);
+            }
+        } else if (selectedWorld !== 'default') {
+            const worldsString = localStorage.getItem('ffny.worlds') || '[]';
+            const worlds = JSON.parse(worldsString);
+            worldData = worlds.find(w => w.name === selectedWorld);
+        }
+
+        // Initialize game with selected world
+        initializeGame(worldData);
+        hideWorldMenu();
+    });
+}
+
+if (closeWorldMenuBtn) {
+    closeWorldMenuBtn.addEventListener('click', hideWorldMenu);
+}
+
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', function() {
+        // Clean up any existing connections
+        if (joined) {
+            cleanupOnUnload();
+            Object.keys(peers).forEach(function(peerId) {
+                removePeer(peerId);
+            });
+        }
+        
+        // Show login overlay
+        loginOverlay.style.display = 'flex';
+        hidePause();
+        
+        // Stop the render loop
+        try { engine.stopRenderLoop(); } catch (e) {}
     });
 }

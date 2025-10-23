@@ -682,7 +682,12 @@ footer {
   box-shadow: 0 8px 20px rgba(0,0,0,0.6);
 }
 
-.pause-actions { display: flex; gap: 0.5rem; justify-content: center; margin: 1rem 0; }
+.pause-actions { 
+    display: flex; 
+    flex-direction: column;
+    gap: 0.5rem; 
+    margin: 1rem 0; 
+}
 .pause-footer { margin-top: 0.5rem; text-align: right; }
 
 .pause-footer .btn { text-decoration: none; }
@@ -739,7 +744,7 @@ footer {
     color: #fff;
 }
 
-#worldSelect {
+#worldSelect, #inGameWorldSelect {
     width: 100%;
     padding: 0.5rem;
     border-radius: 4px;
@@ -750,9 +755,59 @@ footer {
     margin-bottom: 1rem;
 }
 
-#worldSelect:focus {
+#worldSelect:focus, #inGameWorldSelect:focus {
     outline: none;
     border-color: var(--accent-color);
+}
+
+.world-menu-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.world-menu-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #5b6eae;
+}
+
+.btn-secondary {
+    background-color: #4a4d52;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #3d4044;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #bb2d3b;
 }
 
 .world-actions {

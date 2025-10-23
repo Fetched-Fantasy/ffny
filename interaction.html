@@ -25,6 +25,25 @@
         <h1 class="text-center">Fablous</h1>
         <p>Welcome to Fablous!</p>
     </div>
+    <!-- World Menu overlay -->
+    <div id="worldMenuOverlay" class="pause-overlay" aria-hidden="true">
+        <div class="pause-menu">
+            <h2>World Selection</h2>
+            <div class="world-menu-content">
+                <select id="inGameWorldSelect" class="form-control">
+                    <option value="default">Default World</option>
+                    <option value="home">My Home World</option>
+                    <!-- Other worlds loaded dynamically -->
+                </select>
+                <div class="world-menu-actions">
+                    <button id="switchWorldBtn" class="btn btn-primary">Switch World</button>
+                    <a href="engine.html" class="btn btn-secondary">Create New World</a>
+                    <button id="closeWorldMenuBtn" class="btn btn-secondary">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Pause overlay -->
     <div id="pauseOverlay" class="pause-overlay" aria-hidden="true">
         <div class="pause-menu">
@@ -32,6 +51,7 @@
             <div class="pause-actions">
                 <button id="resumeBtn" class="btn btn-primary">Resume</button>
                 <button id="settingsBtn" class="btn btn-secondary">Settings</button>
+                <button id="logoutBtn" class="btn btn-danger">Logout</button>
             </div>
             <!-- Settings panel (hidden until Settings is clicked) -->
             <div id="settingsPanel" class="settings-panel" style="display:none;">
