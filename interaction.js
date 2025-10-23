@@ -58,6 +58,31 @@ var isPaused = false;
 var pauseOverlay = document.getElementById('pauseOverlay');
 var resumeBtn = document.getElementById('resumeBtn');
 var settingsBtn = document.getElementById('settingsBtn');
+// Pointer lock state
+var isPointerLocked = false;
+
+// Request pointer lock when the canvas is clicked
+if (canvas) {
+    canvas.addEventListener('click', function () {
+        if (!isPointerLocked) {
+            // Request pointer lock
+            if (canvas.requestPointerLock) canvas.requestPointerLock();
+            else if (canvas.mozRequestPointerLock) canvas.mozRequestPointerLock();
+            else if (canvas.webkitRequestPointerLock) canvas.webkitRequestPointerLock();
+        }
+    });
+}
+
+// Listen for pointer lock change
+document.addEventListener('pointerlockchange', lockChange, false);
+document.addEventListener('mozpointerlockchange', lockChange, false);
+document.addEventListener('webkitpointerlockchange', lockChange, false);
+
+function lockChange() {
+    var lockedElement = document.pointerLockElement || document.mozPointerLockElement || document.webkitPointerLockElement;
+    isPointerLocked = (lockedElement === canvas);
+    updateLockHint();
+}
 
 function showPause() {
     if (isPaused) return;
@@ -77,11 +102,21 @@ function hidePause() {
         pauseOverlay.setAttribute('aria-hidden', 'true');
     }
     try { engine.runRenderLoop(function () { scene.render(); }); } catch (e) {}
+    updateLockHint();
 }
 
 // Toggle on Escape
 window.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
+        // If pointer is locked, unlock first (user expects Escape to release pointer)
+        if (isPointerLocked) {
+            if (document.exitPointerLock) document.exitPointerLock();
+            else if (document.mozExitPointerLock) document.mozExitPointerLock();
+            else if (document.webkitExitPointerLock) document.webkitExitPointerLock();
+            // don't toggle pause immediately; user released pointer
+            return;
+        }
+
         if (isPaused) hidePause(); else showPause();
     }
 });
@@ -97,3 +132,18 @@ if (settingsBtn) {
         alert('Settings are not implemented yet.');
     });
 }
+
+// Lock hint element
+var lockHint = document.getElementById('lockHint');
+function updateLockHint() {
+    if (!lockHint) return;
+    // Hide the hint while paused or when pointer is locked
+    if (isPaused || isPointerLocked) {
+        lockHint.style.display = 'none';
+    } else {
+        lockHint.style.display = 'block';
+    }
+}
+
+// Initialize hint visibility
+updateLockHint();
