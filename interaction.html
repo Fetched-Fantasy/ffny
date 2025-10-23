@@ -18,7 +18,6 @@
     <title>Interaction Page</title>
 </head>
 <body id="interaction-page">
-    <div class="container">
         <h1>Interaction Page</h1>
         <p>This is the interaction page.</p>
     </div>
@@ -27,7 +26,7 @@
         var canvas = document.createElement('canvas');
         canvas.className = "fill-screen-canvas";
         
-        document.querySelector('.container').appendChild(canvas);
+        document.body.appendChild(canvas);
         var engine = new BABYLON.Engine(canvas, true);
 
         var createScene = function () {
