@@ -1,12 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // Initialize CacheP2P
-  const cacheP2P = new CacheP2P();
-
-  // Start CacheP2P
-  cacheP2P.start({
-    assets: ['changelog.json'],
-    params: {}
-  });
 
   const changeLogList = document.getElementById('change-log-list');
 
