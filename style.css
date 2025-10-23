@@ -30,7 +30,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh; /* Ensure full height */
-  background-color: #23272a; /* Discord Darker Gray */
+  background-color: #23272a !important; /* Discord Darker Gray */
 }
 .container {
     max-width: 900px;
