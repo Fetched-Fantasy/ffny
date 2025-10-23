@@ -194,9 +194,9 @@ function handleLogin() {
         Object.keys(peers).forEach(function(peerId) {
             removePeer(peerId);
         });
-        if (firestore) {
+        if (signalChannel) {
             try {
-                signalsRef.add({ type: 'leave', from: clientId, t: Date.now(), to: null }).catch(function(){});
+                signalChannel.publish('signal', { type: 'leave', from: clientId, t: Date.now(), to: null });
             } catch(e){}
         }
     }
@@ -452,14 +452,50 @@ function setupDataChannel(remoteId, dc){
 function removePeer(remoteId){
     var p = peers[remoteId];
     if (!p) return;
-    try { if (p.dc) p.dc.close(); } catch(e){}
-    try { if (p.pc) p.pc.close(); } catch(e){}
-    if (p.mesh) {
-        try { p.mesh.dispose(); } catch(e){}
-        // remove label DOM if present
-        try { if (p.mesh._ffnyLabel && p.mesh._ffnyLabel.parentNode) p.mesh._ffnyLabel.parentNode.removeChild(p.mesh._ffnyLabel); } catch(e){}
+    
+    // Close and cleanup connection
+    if (p.dc) {
+        try { 
+            p.dc.onopen = null;
+            p.dc.onclose = null;
+            p.dc.onmessage = null;
+            p.dc.close(); 
+        } catch(e){}
     }
+    
+    if (p.pc) {
+        try { 
+            p.pc.onicecandidate = null;
+            p.pc.onconnectionstatechange = null;
+            p.pc.ondatachannel = null;
+            p.pc.close(); 
+        } catch(e){}
+    }
+    
+    // Clean up mesh and label
+    if (p.mesh) {
+        try { 
+            if (p.mesh._ffnyLabel) {
+                var label = p.mesh._ffnyLabel;
+                if (label.parentNode) {
+                    label.parentNode.removeChild(label);
+                }
+                p.mesh._ffnyLabel = null;
+            }
+            p.mesh.dispose(); 
+        } catch(e){}
+    }
+    
+    // Clear buffers
+    if (p.buffer) {
+        p.buffer.length = 0;
+    }
+    
+    // Remove from peers
     delete peers[remoteId];
+    
+    // Update UI
+    updatePeerUI();
 }
 
 // Attempt to clean up our state doc and notify peers when the page is closed or hidden
@@ -484,20 +520,45 @@ function handleRemoteState(state, fromId){
     var p = peers[fromId];
     if (!p) {
         // create a placeholder peer so we can store buffer and create mesh
-        ensurePeer(fromId, false).then(function(){ /* continue */ });
-        p = peers[fromId];
+        ensurePeer(fromId, false).then(function(){
+            p = peers[fromId];
+            if (p) handleRemoteState(state, fromId); // retry after peer created
+        });
+        return;
     }
     if (!p.buffer) p.buffer = [];
-    // normalize numbers
-    var entry = { t: state.t || Date.now(), pos: { x: +state.pos.x, y: +state.pos.y, z: +state.pos.z }, rot: { yaw: +state.rot.yaw, pitch: +state.rot.pitch } };
+
+    // normalize numbers and include username
+    var entry = { 
+        t: state.t || Date.now(), 
+        pos: { 
+            x: Number(state.pos.x) || 0, 
+            y: Number(state.pos.y) || 0, 
+            z: Number(state.pos.z) || 0 
+        }, 
+        rot: { 
+            yaw: Number(state.rot.yaw) || 0, 
+            pitch: Number(state.rot.pitch) || 0 
+        },
+        username: state.username || fromId // fallback to ID if username not set
+    };
+
+    // Update username if changed
+    if (p.mesh && p.mesh._ffnyLabel && entry.username !== p.mesh._ffnyLabel.textContent) {
+        p.mesh._ffnyLabel.textContent = entry.username;
+    }
+
     p.buffer.push(entry);
     // keep last few
     while (p.buffer.length > 20) p.buffer.shift();
+    
     // ensure mesh exists
-    if (!p.mesh) p.mesh = createRemoteAvatarMesh(fromId);
+    if (!p.mesh) {
+        p.mesh = createRemoteAvatarMesh(fromId, entry.username);
+    }
 }
 
-function createRemoteAvatarMesh(id){
+function createRemoteAvatarMesh(id, username){
     var m = BABYLON.MeshBuilder.CreateSphere('remote_' + id, { diameter: 0.6 }, scene);
     var mat = new BABYLON.StandardMaterial('m_' + id, scene);
     // color by id hash
@@ -507,8 +568,8 @@ function createRemoteAvatarMesh(id){
     // create a DOM label for the avatar
     var label = document.createElement('div');
     label.className = 'ffny-remote-label';
-    // Use id as username since we're now storing usernames as clientId
-    label.textContent = id;
+    // Use username if available, fallback to id
+    label.textContent = username || id;
     label.style.position = 'fixed';
     label.style.transform = 'translate(-50%, -120%)';
     label.style.pointerEvents = 'none';
@@ -568,14 +629,43 @@ function startStateLoop(){
     if (stateSendInterval) return;
     stateSendInterval = setInterval(function(){
         if (!camera) return;
-        var state = { type: 'state', id: clientId, t: Date.now(), pos: { x: camera.position.x, y: camera.position.y, z: camera.position.z }, rot: { yaw: camera.rotation.y, pitch: camera.rotation.x } };
-        // send over datachannels
+        var state = { 
+            type: 'state', 
+            id: clientId, 
+            t: Date.now(), 
+            pos: { 
+                x: camera.position.x, 
+                y: camera.position.y, 
+                z: camera.position.z 
+            }, 
+            rot: { 
+                yaw: camera.rotation.y, 
+                pitch: camera.rotation.x 
+            },
+            username: username // Include username in every state update
+        };
+        
+        // Send over DataChannels and always use fallback
         Object.keys(peers).forEach(function(remoteId){
             var p = peers[remoteId];
             if (p && p.dc && p.dc.readyState === 'open'){
-                try { p.dc.send(JSON.stringify(state)); } catch(e){}
+                try { 
+                    p.dc.send(JSON.stringify(state)); 
+                } catch(e){
+                    console.warn('DataChannel send failed, using fallback', e);
+                    if (statesRef) {
+                        try {
+                            statesRef.doc(clientId).set({ 
+                                state: state, 
+                                t: Date.now(), 
+                                expiresAt: new Date(Date.now() + STATE_TTL_MS) 
+                            }).catch(function(){});
+                        } catch(e){}
+                    }
+                }
             }
         });
+        
         // fallback relay via Ably at low rate
         if (USE_FIRESTORE_FALLBACK && stateChannel) {
             try {
