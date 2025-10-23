@@ -1,6 +1,10 @@
 // interaction.js
 'use strict';
 
+// Load persisted camera settings (if any)
+var cameraInertia = parseFloat(localStorage.getItem('ffny.inertia')) || 0.02;
+var cameraAngularSensibility = parseInt(localStorage.getItem('ffny.angularSensibility')) || 800;
+
 // Create and insert canvas
 var canvas = document.createElement('canvas');
 canvas.className = 'game-canvas';
@@ -12,11 +16,12 @@ if (gameRoot) {
 // Babylon engine and scene
 var engine = new BABYLON.Engine(canvas, true);
 
+var camera; // exposed for settings to modify
 var createScene = function () {
     var scene = new BABYLON.Scene(engine);
     scene.gravity = new BABYLON.Vector3(0, -0.9, 0);
     scene.collisionsEnabled = true;
-    var camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 5, -10), scene);
+    camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 5, -10), scene);
     camera.setTarget(BABYLON.Vector3.Zero());
     camera.attachControl(canvas, true);
     camera.applyGravity = true;
@@ -24,12 +29,10 @@ var createScene = function () {
     camera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
     camera.speed = 0.2;
 
-    // Tweak inertia and angular sensitivity for snappier, faster turning
-    // Lower inertia reduces smoothing; lower angularSensibility increases rotation speed.
-    camera.inertia = 0.02; // less smoothing
-
+    // Apply persisted/default settings
+    camera.inertia = cameraInertia;
     if (typeof camera.angularSensibility !== 'undefined') {
-        camera.angularSensibility = 800; // lower = more sensitive (faster turns)
+        camera.angularSensibility = cameraAngularSensibility;
     }
 
     // WASD controls
@@ -137,7 +140,18 @@ if (resumeBtn) {
 
 if (settingsBtn) {
     settingsBtn.addEventListener('click', function () {
-        alert('Settings are not implemented yet.');
+        // Show settings panel inside pause menu
+        var settingsPanel = document.getElementById('settingsPanel');
+        if (settingsPanel) {
+            settingsPanel.style.display = 'block';
+            // populate controls with current values
+            var inertiaRange = document.getElementById('inertiaRange');
+            var sensitivityRange = document.getElementById('sensitivityRange');
+            var inertiaValue = document.getElementById('inertiaValue');
+            var sensitivityValue = document.getElementById('sensitivityValue');
+            if (inertiaRange) { inertiaRange.value = camera.inertia; inertiaValue.textContent = camera.inertia; }
+            if (sensitivityRange && typeof camera.angularSensibility !== 'undefined') { sensitivityRange.value = camera.angularSensibility; sensitivityValue.textContent = camera.angularSensibility; }
+        }
     });
 }
 
@@ -155,3 +169,44 @@ function updateLockHint() {
 
 // Initialize hint visibility
 updateLockHint();
+
+// Settings panel controls
+var backFromSettingsBtn = document.getElementById('backFromSettingsBtn');
+var saveSettingsBtn = document.getElementById('saveSettingsBtn');
+var inertiaRange = document.getElementById('inertiaRange');
+var sensitivityRange = document.getElementById('sensitivityRange');
+var inertiaValue = document.getElementById('inertiaValue');
+var sensitivityValue = document.getElementById('sensitivityValue');
+
+function applySettings(inertiaVal, sensVal) {
+    if (camera) {
+        camera.inertia = parseFloat(inertiaVal);
+        if (typeof camera.angularSensibility !== 'undefined') camera.angularSensibility = parseInt(sensVal, 10);
+    }
+}
+
+if (inertiaRange) {
+    inertiaRange.addEventListener('input', function () { inertiaValue.textContent = inertiaRange.value; applySettings(inertiaRange.value, sensitivityRange ? sensitivityRange.value : camera.angularSensibility); });
+}
+if (sensitivityRange) {
+    sensitivityRange.addEventListener('input', function () { sensitivityValue.textContent = sensitivityRange.value; applySettings(inertiaRange ? inertiaRange.value : camera.inertia, sensitivityRange.value); });
+}
+
+if (saveSettingsBtn) {
+    saveSettingsBtn.addEventListener('click', function () {
+        var iVal = inertiaRange ? inertiaRange.value : camera.inertia;
+        var sVal = sensitivityRange ? sensitivityRange.value : (typeof camera.angularSensibility !== 'undefined' ? camera.angularSensibility : 800);
+        localStorage.setItem('ffny.inertia', iVal);
+        localStorage.setItem('ffny.angularSensibility', sVal);
+        // hide settings
+        var settingsPanel = document.getElementById('settingsPanel');
+        if (settingsPanel) settingsPanel.style.display = 'none';
+    });
+}
+
+if (backFromSettingsBtn) {
+    backFromSettingsBtn.addEventListener('click', function () {
+        var settingsPanel = document.getElementById('settingsPanel');
+        if (settingsPanel) settingsPanel.style.display = 'none';
+    });
+}

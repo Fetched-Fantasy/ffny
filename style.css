@@ -650,3 +650,10 @@ footer {
   pointer-events: none; /* allows clicks to pass through to canvas */
 }
 
+/* Settings panel inside pause menu */
+.settings-panel { margin-top: 0.75rem; text-align: left; }
+.settings-panel h3 { margin-top: 0; margin-bottom: 0.5rem; }
+.setting-row { margin-bottom: 0.75rem; }
+.setting-row label { display: block; font-size: 0.9rem; margin-bottom: 0.25rem; }
+.settings-actions { display: flex; gap: 0.5rem; justify-content: flex-end; }
+
