@@ -180,17 +180,17 @@ var scene = createScene();
 function initializeGame(worldData) {
     // Dispose old scene if it exists
     if (scene) {
-        scene.dispose();
+        try { scene.dispose(); } catch(e) {}
     }
-    
+
     // Create new scene with world data
     scene = createScene(worldData);
-    
-    engine.runRenderLoop(function () {
-        // Update remote players (interpolation/extrapolation)
-        try { updateRemotePlayers(); } catch (e) { /* ignore until networking initialized */ }
+
+    // Ensure a render loop is running for this scene
+    try { engine.runRenderLoop(function () {
+        try { updateRemotePlayers(); } catch (e) {}
         scene.render();
-    });
+    }); } catch(e) {}
 }
 
 // Initial render loop
@@ -882,7 +882,7 @@ function startNetworking(){
 }
 
 // Load world list when page loads
-loadWorldList();
+loadWorldList('login');
 
 // Initialize game with stored username or show login
 if (username) {
@@ -972,45 +972,101 @@ function hideWorldMenu() {
     try { engine.runRenderLoop(function () { scene.render(); }); } catch (e) {}
     updateLockHint();
 }
+// World browser state & helpers (top-level)
+var currentCategory = 'all';
+var currentSort = 'name';
+var searchQuery = '';
+var worldsList = [];
+var featuredWorlds = [];
+var recentWorlds = [];
 
-function toggleWorldMenu() {
-    if (worldMenuOpen) hideWorldMenu(); else showWorldMenu();
+function createWorldCard(world) {
+    const card = document.createElement('div');
+    card.className = 'world-card';
+    card.innerHTML = "" +
+        '<div class="world-card-image"></div>' +
+        '<div class="world-card-content">' +
+            '<h4 class="world-card-title"></h4>' +
+            '<div class="world-card-author"></div>' +
+        '</div>';
+    const img = card.querySelector('.world-card-image');
+    img.style.backgroundColor = getWorldColor(world.name);
+    card.querySelector('.world-card-title').textContent = world.name;
+    card.querySelector('.world-card-author').textContent = 'by ' + (world.author || 'Anonymous');
+    card.addEventListener('click', function () { switchToWorld(world); });
+    return card;
+}
+
+function getWorldColor(name) {
+    var hash = 0; for (var i=0;i<name.length;i++){ hash = name.charCodeAt(i) + ((hash<<5)-hash); }
+    var h = Math.abs(hash) % 360;
+    return 'hsl(' + h + ',70%,30%)';
+}
+
+function updateFeaturedGrid() {
+    var grid = document.getElementById('featuredWorldsGrid');
+    if (!grid) return; grid.innerHTML = '';
+    featuredWorlds.forEach(function(w){ grid.appendChild(createWorldCard(w)); });
+}
+
+function updateMainGrid(worlds) {
+    var grid = document.getElementById('mainWorldGrid');
+    if (!grid) return; grid.innerHTML = '';
+    worlds.forEach(function(w){ grid.appendChild(createWorldCard(w)); });
+}
+
+function switchToWorld(world) {
+    // track recent
+    var rec = JSON.parse(localStorage.getItem('ffny.recentWorlds')||'[]');
+    rec = rec.filter(function(x){ return x.name !== world.name; });
+    rec.unshift(world);
+    localStorage.setItem('ffny.recentWorlds', JSON.stringify(rec.slice(0,10)));
+    // update visits
+    world.visits = (world.visits||0) + 1;
+    world.lastVisited = Date.now();
+    // persist worldsList if present
+    try { localStorage.setItem('ffny.worlds', JSON.stringify(worldsList)); } catch(e){}
+    // load world
+    initializeGame(world);
+    hideWorldMenu();
+}
+
+function updateWorldBrowser() {
+    // compute featured
+    featuredWorlds = (worldsList||[]).filter(function(w){return w.published;}).sort(function(){return 0.5-Math.random();}).slice(0,4);
+    recentWorlds = JSON.parse(localStorage.getItem('ffny.recentWorlds')||'[]');
+
+    var filtered = (worldsList||[]).slice();
+    if (searchQuery) filtered = filtered.filter(function(w){ return w.name.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1; });
+    switch(currentCategory){
+        case 'my-worlds': filtered = filtered.filter(function(w){ return !w.published; }); break;
+        case 'featured': filtered = featuredWorlds; break;
+        case 'popular': filtered = (worldsList||[]).slice().sort(function(a,b){ return (b.visits||0)-(a.visits||0); }); break;
+        case 'recent': filtered = recentWorlds; break;
+    }
+    switch(currentSort){
+        case 'name': filtered.sort(function(a,b){ return a.name.localeCompare(b.name); }); break;
+        case 'recent': filtered.sort(function(a,b){ return (b.lastVisited||0)-(a.lastVisited||0); }); break;
+        case 'popular': filtered.sort(function(a,b){ return (b.visits||0)-(a.visits||0); }); break;
+    }
+    updateFeaturedGrid(); updateMainGrid(filtered);
 }
 
 function loadInGameWorldList() {
-    const worldSelect = document.getElementById('inGameWorldSelect');
-    if (!worldSelect) return;
-    
-    const worldsString = localStorage.getItem('ffny.worlds') || '[]';
-    const worlds = JSON.parse(worldsString);
-    const homeWorld = localStorage.getItem('ffny.homeWorld');
-    
-    // Clear existing options except default and home
-    while (worldSelect.options.length > 2) {
-        worldSelect.remove(2);
-    }
-    
-    // Update home world option
-    if (homeWorld) {
-        const homeWorldData = worlds.find(w => w.name === homeWorld);
-        if (homeWorldData) {
-            worldSelect.querySelector('option[value="home"]').textContent = 'My Home World: ' + homeWorld;
-            worldSelect.querySelector('option[value="home"]').style.display = '';
-        } else {
-            worldSelect.querySelector('option[value="home"]').style.display = 'none';
-        }
-    } else {
-        worldSelect.querySelector('option[value="home"]').style.display = 'none';
-    }
-    
-    // Add published worlds
-    worlds.filter(w => w.published && w.name !== homeWorld).forEach(world => {
-        const option = document.createElement('option');
-        option.value = world.name;
-        option.textContent = world.name;
-        worldSelect.appendChild(option);
-    });
+    // ensure worldsList populated
+    try { worldsList = JSON.parse(localStorage.getItem('ffny.worlds')||'[]'); } catch(e){ worldsList = []; }
+    updateWorldBrowser();
 }
+
+// wire up search / sort / categories (safe to call multiple times)
+document.addEventListener('DOMContentLoaded', function(){
+    var searchInput = document.getElementById('worldSearchInput');
+    var sortSelect = document.getElementById('worldSortSelect');
+    var categoryBtns = document.querySelectorAll('.category-btn');
+    if (searchInput) searchInput.addEventListener('input', function(e){ searchQuery = e.target.value; updateWorldBrowser(); });
+    if (sortSelect) sortSelect.addEventListener('change', function(e){ currentSort = e.target.value; updateWorldBrowser(); });
+    if (categoryBtns) categoryBtns.forEach(function(btn){ btn.addEventListener('click', function(){ categoryBtns.forEach(function(b){b.classList.remove('active');}); btn.classList.add('active'); currentCategory = btn.dataset.category; updateWorldBrowser(); }); });
+});
 
 // Toggle menus on Escape and E
 window.addEventListener('keydown', function (e) {
