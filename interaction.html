@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Interaction">
+    <meta property="og:description" content="This is the interaction page.">
+    <meta property="og:image" content="">
+    <meta property="og:url" content="">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BY4KC1P2F8"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-BY4KC1P2F8');
+    </script>
+    <title>Interaction</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Interaction Page</h1>
+        <p>This is the interaction page.</p>
+    </div>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script>
+        var canvas = document.createElement('canvas');
+        canvas.style.width = '100%';
+        canvas.style.height = '400px';
+        document.querySelector('.container').appendChild(canvas);
+        var engine = new BABYLON.Engine(canvas, true);
+
+        var createScene = function () {
+            var scene = new BABYLON.Scene(engine);
+            var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 10, new BABYLON.Vector3(0, 0, 0), scene);
+            camera.setPosition(new BABYLON.Vector3(0, 5, -10));
+            camera.attachControl(canvas, true);
+            var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+            var box = BABYLON.MeshBuilder.CreateBox("box", {size: 2}, scene);
+
+            scene.onBeforeRenderObservable.add(() => {
+                box.rotation.y += 0.01;
+            });
+
+            return scene;
+        };
+
+        var scene = createScene();
+
+        engine.runRenderLoop(function () {
+            scene.render();
+        });
+
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });
+    </script>
+</body>
+</html>
