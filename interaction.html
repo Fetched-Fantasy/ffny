@@ -24,6 +24,9 @@
 <div class="container" style="position:relative;">
         <h1 class="text-center">Fablous</h1>
         <p>Welcome to Fablous!</p>
+        <div style="position:absolute;right:12px;top:12px;">
+            <a id="adminLink" href="gameadmin.html" class="btn btn-sm btn-outline-secondary" style="display:none;">Admin</a>
+        </div>
     </div>
     <!-- World Menu overlay -->
         <div id="worldMenuOverlay" class="pause-overlay" aria-hidden="true">
@@ -118,6 +121,8 @@
             <h2>Enter Your Username</h2>
             <div class="login-form">
                 <input type="text" id="usernameInput" placeholder="Username" maxlength="20">
+                <input type="email" id="emailInput" placeholder="Email" style="margin-top:8px;" />
+                <input type="password" id="passwordInput" placeholder="Password" style="margin-top:8px;" />
                 <div class="mode-select">
                     <label>
                         <input type="radio" name="gameMode" id="singlePlayerMode" checked>
@@ -136,7 +141,10 @@
                         <!-- Other worlds will be loaded dynamically -->
                     </select>
                 </div>
-                <button id="loginButton" class="btn btn-primary">Start Game</button>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px;">
+                    <button id="loginButton" class="btn btn-primary">Login</button>
+                    <button id="signupButton" class="btn btn-secondary">Sign Up</button>
+                </div>
                 <p id="loginError" class="login-error"></p>
                 <div class="world-actions">
                     <a href="engine.html" class="btn btn-secondary">Create New World</a>

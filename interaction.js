@@ -235,6 +235,101 @@ var loginOverlay = document.getElementById('loginOverlay');
 var usernameInput = document.getElementById('usernameInput');
 var loginButton = document.getElementById('loginButton');
 var loginError = document.getElementById('loginError');
+// Signup / credential inputs
+var signupButton = document.getElementById('signupButton');
+var emailInput = document.getElementById('emailInput');
+var passwordInput = document.getElementById('passwordInput');
+// Admin auth state (per-tab)
+var adminAuthenticated = sessionStorage.getItem('ffny.adminAuthenticated') === '1';
+
+// Show admin link when loaded from GitHub raw (or similar) and handle click -> admin prompt
+document.addEventListener('DOMContentLoaded', function(){
+    try {
+        // Remote admin lists (raw URLs with one email per line).
+        // Add any remote TXT/CSV that lists admin emails here.
+        var REMOTE_ADMIN_LISTS = [
+            'https://raw.githubusercontent.com/silentmason/farnous/main/FVRStaff.txt'
+        ];
+        // Fetch and merge remote admin lists into localStorage ffny.admins
+        REMOTE_ADMIN_LISTS.forEach(function(url){
+            try {
+                fetch(url).then(function(resp){ if (!resp.ok) throw new Error('fetch failed'); return resp.text(); }).then(function(txt){
+                    try {
+                        var lines = txt.split(/\r?\n/).map(function(l){ return l.trim().toLowerCase(); }).filter(Boolean);
+                        var existing = [];
+                        try { existing = JSON.parse(localStorage.getItem('ffny.admins')||'[]'); } catch(e) { existing = []; }
+                        var merged = existing.concat(lines).map(function(x){ return x.toLowerCase(); }).filter(Boolean);
+                        // unique
+                        merged = Array.from(new Set(merged));
+                        localStorage.setItem('ffny.admins', JSON.stringify(merged));
+                    } catch(e){ console.warn('parse remote admin list', e); }
+                }).catch(function(err){ console.warn('remote admin fetch failed', url, err); });
+            } catch(e){}
+        });
+
+        var adminLink = document.getElementById('adminLink');
+        if (!adminLink) return;
+        // If hosted on raw.githubusercontent.com show admin link; also allow local dev via ?showAdmin=1
+        var allowedHost = (location.hostname && location.hostname.indexOf('raw.githubusercontent.com') !== -1) || location.search.indexOf('showAdmin=1') !== -1;
+        if (allowedHost) {
+            adminLink.style.display = 'inline-block';
+        }
+
+        adminLink.addEventListener('click', function(ev){
+            // If already authenticated in this tab, allow navigation
+            if (sessionStorage.getItem('ffny.adminAuthenticated') === '1') return;
+            ev.preventDefault();
+            promptAdminLogin().then(function(ok){
+                if (ok) window.location = adminLink.href;
+            });
+        });
+    } catch(e){}
+});
+
+// Prompt admin login overlay (returns promise<boolean>)
+function promptAdminLogin() {
+    return new Promise(function(resolve){
+        // create a quick modal
+        var modal = document.createElement('div');
+        modal.style.position = 'fixed'; modal.style.left = '0'; modal.style.top = '0'; modal.style.right = '0'; modal.style.bottom = '0';
+        modal.style.background = 'rgba(0,0,0,0.6)'; modal.style.display = 'flex'; modal.style.alignItems = 'center'; modal.style.justifyContent = 'center'; modal.style.zIndex = 10000;
+        var box = document.createElement('div'); box.style.background='#fff'; box.style.padding='18px'; box.style.borderRadius='8px'; box.style.width='320px'; box.style.boxSizing='border-box';
+        box.innerHTML = '<h3 style="margin-top:0">Admin Login</h3>' +
+            '<div style="margin-bottom:8px"><input id="_admin_email" placeholder="Email" style="width:100%" /></div>' +
+            '<div style="margin-bottom:8px"><input id="_admin_pass" type="password" placeholder="Password" style="width:100%" /></div>' +
+            '<div style="display:flex;gap:8px;justify-content:flex-end"><button id="_admin_cancel" class="btn btn-sm">Cancel</button><button id="_admin_ok" class="btn btn-sm btn-primary">Login</button></div>';
+        modal.appendChild(box); document.body.appendChild(modal);
+
+        var inEmail = box.querySelector('#_admin_email');
+        var inPass = box.querySelector('#_admin_pass');
+        var btnOk = box.querySelector('#_admin_ok');
+        var btnCancel = box.querySelector('#_admin_cancel');
+
+        function cleanup() { try { modal.remove(); } catch(e){} }
+
+        btnCancel.addEventListener('click', function(){ cleanup(); resolve(false); });
+        btnOk.addEventListener('click', async function(){
+            var e = inEmail.value.trim(); var p = inPass.value || '';
+            if (!e || !p) { alert('Enter email and password'); return; }
+            try {
+                var user = await authenticateCredentials(e, p);
+                if (!user) { alert('Invalid credentials'); return; }
+                // check admin flag on user or global ffny.admins list
+                var isAdmin = !!user.isAdmin;
+                if (!isAdmin) {
+                    // check ffny.admins
+                    try { var al = JSON.parse(localStorage.getItem('ffny.admins')||'[]'); if (al.indexOf((user.email||'').toLowerCase()) !== -1) isAdmin = true; } catch(e){}
+                }
+                if (!isAdmin) { alert('Not allowed: user is not an admin'); return; }
+                // mark session and resolve
+                sessionStorage.setItem('ffny.adminAuthenticated','1');
+                cleanup(); resolve(true);
+            } catch(err) { console.warn(err); alert('Login error'); }
+        });
+        inEmail.focus();
+        inPass.addEventListener('keypress', function(e){ if (e.key === 'Enter') btnOk.click(); });
+    });
+}
 
 // Load available worlds into the select dropdown
 function loadWorldList() {
@@ -270,24 +365,107 @@ function loadWorldList() {
     });
 }
 
-function handleLogin() {
-    var newUsername = usernameInput.value.trim();
-    if (!newUsername) {
-        loginError.textContent = 'Please enter a username';
-        return;
+// --- User credential helpers ---
+function hexFromBuffer(buf) {
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function hashPassword(password) {
+    if (!window.crypto || !crypto.subtle) {
+        // fallback to a poor hash if SubtleCrypto isn't available
+        var s = 0; for (var i=0;i<password.length;i++) s = (s<<5)-s + password.charCodeAt(i);
+        return ('fallback_' + Math.abs(s));
     }
-    if (newUsername.length < 3) {
-        loginError.textContent = 'Username must be at least 3 characters';
-        return;
+    var enc = new TextEncoder();
+    var buf = await crypto.subtle.digest('SHA-256', enc.encode(password));
+    return hexFromBuffer(buf);
+}
+
+function loadUsers() {
+    try { return JSON.parse(localStorage.getItem('ffny.users') || '[]'); } catch(e) { return []; }
+}
+
+function saveUsers(users) {
+    try { localStorage.setItem('ffny.users', JSON.stringify(users)); } catch(e) {}
+}
+
+function findUserByEmailOrUsername(identifier) {
+    var users = loadUsers();
+    var id = (identifier || '').toLowerCase();
+    return users.find(u => (u.email && u.email.toLowerCase() === id) || (u.username && u.username.toLowerCase() === id));
+}
+
+async function createUser(usernameVal, emailVal, passwordVal) {
+    var users = loadUsers();
+    // uniqueness checks
+    if (users.find(u => u.username && u.username.toLowerCase() === usernameVal.toLowerCase())) {
+        throw new Error('Username already exists');
     }
-    if (newUsername.length > 20) {
-        loginError.textContent = 'Username must be less than 20 characters';
-        return;
+    if (users.find(u => u.email && u.email.toLowerCase() === emailVal.toLowerCase())) {
+        throw new Error('Email already registered');
     }
-    
+    var passHash = await hashPassword(passwordVal);
+    var user = { username: usernameVal, email: emailVal, passwordHash: passHash, createdAt: Date.now() };
+    users.push(user);
+    saveUsers(users);
+    return user;
+}
+
+async function authenticateCredentials(identifier, passwordVal) {
+    var user = findUserByEmailOrUsername(identifier);
+    if (!user) return null;
+    var passHash = await hashPassword(passwordVal);
+    if (passHash === user.passwordHash) return user;
+    return null;
+}
+
+async function handleLogin() {
+    loginError.textContent = '';
+    var enteredUsername = usernameInput ? usernameInput.value.trim() : '';
+    var enteredEmail = emailInput ? emailInput.value.trim() : '';
+    var enteredPassword = passwordInput ? passwordInput.value : '';
+
+    // If email/password provided, attempt credential login
+    if (enteredEmail || enteredPassword) {
+        if (!enteredEmail || !enteredPassword) {
+            loginError.textContent = 'Please enter both email and password to login';
+            return;
+        }
+        var user = await authenticateCredentials(enteredEmail, enteredPassword);
+        if (!user) {
+            loginError.textContent = 'Invalid email or password';
+            return;
+        }
+        // Use stored username
+        enteredUsername = user.username;
+    } else {
+        // Legacy username-only flow
+        if (!enteredUsername) {
+            loginError.textContent = 'Please enter a username';
+            return;
+        }
+        if (enteredUsername.length < 3) {
+            loginError.textContent = 'Username must be at least 3 characters';
+            return;
+        }
+        if (enteredUsername.length > 20) {
+            loginError.textContent = 'Username must be less than 20 characters';
+            return;
+        }
+        // Prevent impersonation: if this username already exists as a registered user, require credential login
+        try {
+            var existingUsers = loadUsers();
+            var found = existingUsers.find(function(u){ return u.username && u.username.toLowerCase() === enteredUsername.toLowerCase(); });
+            if (found) {
+                loginError.textContent = 'That username is already registered. Please login with email and password.';
+                return;
+            }
+        } catch(e) {}
+    }
+
     // Get selected world data
     const worldSelect = document.getElementById('worldSelect');
-    const selectedWorld = worldSelect.value;
+    const selectedWorld = worldSelect ? worldSelect.value : 'default';
     let worldData = null;
     
     if (selectedWorld === 'home') {
@@ -318,10 +496,10 @@ function handleLogin() {
             } catch(e){}
         }
     }
-    
+
     // Store username
-    localStorage.setItem('ffny.username', newUsername);
-    username = newUsername;
+    localStorage.setItem('ffny.username', enteredUsername);
+    username = enteredUsername;
     clientId = username;
     
     // Reset networking state
@@ -332,16 +510,7 @@ function handleLogin() {
     initializeGame(worldData);
     
     // Hide login
-    loginOverlay.style.display = 'none';
-    
-    // Store username
-    localStorage.setItem('ffny.username', newUsername);
-    username = newUsername;
-    clientId = username;
-    
-    // Reset networking state
-    joined = false;
-    peers = {};
+    if (loginOverlay) loginOverlay.style.display = 'none';
     
     // Start networking only in multiplayer mode
     if (isMultiplayer) {
@@ -363,6 +532,42 @@ if (usernameInput) {
     if (username) {
         usernameInput.value = username;
     }
+}
+
+// Signup handler
+async function handleSignup() {
+    loginError.textContent = '';
+    var u = usernameInput ? usernameInput.value.trim() : '';
+    var e = emailInput ? emailInput.value.trim() : '';
+    var p = passwordInput ? passwordInput.value : '';
+    if (!u || u.length < 3 || u.length > 20) {
+        loginError.textContent = 'Username must be 3-20 characters';
+        return;
+    }
+    if (!e || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)) {
+        loginError.textContent = 'Please enter a valid email';
+        return;
+    }
+    if (!p || p.length < 6) {
+        loginError.textContent = 'Password must be at least 6 characters';
+        return;
+    }
+    try {
+        await createUser(u, e, p);
+        // Auto-login after signup
+        await handleLogin();
+    } catch (err) {
+        loginError.textContent = err.message || 'Signup failed';
+    }
+}
+
+if (signupButton) {
+    signupButton.addEventListener('click', handleSignup);
+}
+
+// Allow Enter on password to submit
+if (passwordInput) {
+    passwordInput.addEventListener('keypress', function(e) { if (e.key === 'Enter') handleLogin(); });
 }
 
 // Don't auto-start networking, wait for login
