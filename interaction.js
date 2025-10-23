@@ -94,6 +94,7 @@ var clientId = hex8();
 var peers = {}; // remoteId => { pc, dc, buffer: [{t,pos,rot}], mesh }
 var firestore = null;
 var signalsRef = null;
+var statesRef = null;
 var joined = false;
 // HUD / presence UI
 var hud = null;
@@ -126,6 +127,7 @@ function initFirestore(){
         if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
         firestore = firebase.firestore();
         signalsRef = firestore.collection('rooms').doc(ROOM_ID).collection('signals');
+        statesRef = firestore.collection('rooms').doc(ROOM_ID).collection('states');
         console.log('Firestore initialized for room', ROOM_ID);
         startSignalling();
     } catch (e) {
@@ -154,6 +156,21 @@ function startSignalling(){
     // announce presence
     signalsRef.add({ type: 'join', from: clientId, t: Date.now(), to: null }).catch(()=>{});
     joined = true;
+    // listen for low-rate state updates from other peers (per-client documents)
+    if (statesRef) {
+        statesRef.onSnapshot(function(snap){
+            snap.docChanges().forEach(function(change){
+                var id = change.doc.id;
+                if (id === clientId) return; // ignore our own
+                if (change.type === 'added' || change.type === 'modified'){
+                    var data = change.doc.data();
+                    if (data && data.state) handleRemoteState(data.state, id);
+                } else if (change.type === 'removed'){
+                    removePeer(id);
+                }
+            });
+        }, function(err){ console.warn('statesRef snapshot err', err); });
+    }
 }
 
 function handleSignal(msg){
@@ -380,9 +397,13 @@ function startStateLoop(){
                 try { p.dc.send(JSON.stringify(state)); } catch(e){}
             }
         });
-        // fallback relay via Firestore at low rate
-        if (USE_FIRESTORE_FALLBACK && signalsRef) {
-            signalsRef.add({ type: 'relay-state', from: clientId, to: null, state: state, t: Date.now() }).catch(()=>{});
+        // fallback relay via Firestore at low rate: update a per-client doc instead of adding many small documents
+        if (USE_FIRESTORE_FALLBACK && statesRef) {
+            try {
+                statesRef.doc(clientId).set({ state: state, t: Date.now() }).catch(function(err){
+                    console.warn('Failed to write state doc', err);
+                });
+            } catch(e){ console.warn('statesRef set err', e); }
         }
     }, 100); // 10Hz
 }
