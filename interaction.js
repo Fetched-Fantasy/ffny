@@ -38,7 +38,7 @@ var mobileButtonStates = {
 var engine = new BABYLON.Engine(canvas, true);
 
 var camera; // exposed for settings to modify
-var createScene = function () {
+function createScene(worldData) {
     var scene = new BABYLON.Scene(engine);
     scene.gravity = new BABYLON.Vector3(0, -0.9, 0);
     scene.collisionsEnabled = true;
@@ -54,6 +54,53 @@ var createScene = function () {
     camera.inertia = cameraInertia;
     if (typeof camera.angularSensibility !== 'undefined') {
         camera.angularSensibility = cameraAngularSensibility;
+    }
+
+    // Create world from saved data if provided
+    if (worldData && worldData.objects) {
+        worldData.objects.forEach(obj => {
+            let mesh;
+            switch(obj.type) {
+                case 'cube':
+                    mesh = BABYLON.MeshBuilder.CreateBox(obj.name, { size: 1 }, scene);
+                    break;
+                case 'sphere':
+                    mesh = BABYLON.MeshBuilder.CreateSphere(obj.name, { diameter: 1 }, scene);
+                    break;
+                case 'ground':
+                    mesh = BABYLON.MeshBuilder.CreateGround(obj.name, { width: 6, height: 6 }, scene);
+                    break;
+                case 'lightSphere':
+                    const light = new BABYLON.PointLight(obj.name.replace('Sphere_', ''), 
+                        new BABYLON.Vector3(...obj.position), scene);
+                    light.intensity = 0.7;
+                    mesh = BABYLON.MeshBuilder.CreateSphere(obj.name, { diameter: 0.2 }, scene);
+                    const lightMat = new BABYLON.StandardMaterial(obj.name + "_mat", scene);
+                    lightMat.emissiveColor = new BABYLON.Color3(1, 1, 0);
+                    mesh.material = lightMat;
+                    mesh.light = light;
+                    break;
+            }
+            if (mesh) {
+                mesh.position = new BABYLON.Vector3(...obj.position);
+                mesh.rotation = new BABYLON.Vector3(...obj.rotation);
+                mesh.scaling = new BABYLON.Vector3(...obj.scaling);
+                if (obj.type !== 'lightSphere') {
+                    mesh.checkCollisions = true;
+                }
+            }
+        });
+    } else {
+        // Default world if no custom world loaded
+        const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, 0), scene);
+        light.intensity = 0.7;
+
+        const material = new BABYLON.StandardMaterial('groundMaterial', scene);
+        material.diffuseColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+        material.specularColor = new BABYLON.Color3(0, 0, 0);
+        const ground = BABYLON.MeshBuilder.CreateGround('ground1', { width: 20, height: 20, subdivisions: 2 }, scene);
+        ground.material = material;
+        ground.checkCollisions = true;
     }
 
     // WASD controls
@@ -127,11 +174,27 @@ var createScene = function () {
     return scene;
 };
 
+// Initialize with default scene
 var scene = createScene();
 
+function initializeGame(worldData) {
+    // Dispose old scene if it exists
+    if (scene) {
+        scene.dispose();
+    }
+    
+    // Create new scene with world data
+    scene = createScene(worldData);
+    
+    engine.runRenderLoop(function () {
+        // Update remote players (interpolation/extrapolation)
+        try { updateRemotePlayers(); } catch (e) { /* ignore until networking initialized */ }
+        scene.render();
+    });
+}
+
+// Initial render loop
 engine.runRenderLoop(function () {
-    // Update remote players (interpolation/extrapolation)
-    try { updateRemotePlayers(); } catch (e) { /* ignore until networking initialized */ }
     scene.render();
 });
 
@@ -173,6 +236,26 @@ var usernameInput = document.getElementById('usernameInput');
 var loginButton = document.getElementById('loginButton');
 var loginError = document.getElementById('loginError');
 
+// Load available worlds into the select dropdown
+function loadWorldList() {
+    const worldSelect = document.getElementById('worldSelect');
+    const worldsString = localStorage.getItem('ffny.worlds') || '[]';
+    const worlds = JSON.parse(worldsString);
+    
+    // Clear existing options except default
+    while (worldSelect.options.length > 1) {
+        worldSelect.remove(1);
+    }
+    
+    // Add published worlds
+    worlds.filter(w => w.published).forEach(world => {
+        const option = document.createElement('option');
+        option.value = world.name;
+        option.textContent = world.name;
+        worldSelect.appendChild(option);
+    });
+}
+
 function handleLogin() {
     var newUsername = usernameInput.value.trim();
     if (!newUsername) {
@@ -186,6 +269,17 @@ function handleLogin() {
     if (newUsername.length > 20) {
         loginError.textContent = 'Username must be less than 20 characters';
         return;
+    }
+    
+    // Get selected world data
+    const worldSelect = document.getElementById('worldSelect');
+    const selectedWorld = worldSelect.value;
+    let worldData = null;
+    
+    if (selectedWorld !== 'default') {
+        const worldsString = localStorage.getItem('ffny.worlds') || '[]';
+        const worlds = JSON.parse(worldsString);
+        worldData = worlds.find(w => w.name === selectedWorld);
     }
     
     // Clean up any existing connections before changing ID
@@ -209,6 +303,9 @@ function handleLogin() {
     // Reset networking state
     joined = false;
     peers = {};
+    
+    // Initialize game with selected world
+    initializeGame(worldData);
     
     // Hide login
     loginOverlay.style.display = 'none';
@@ -748,6 +845,9 @@ function startNetworking(){
         if (err) { console.warn('Ably load failed, starting state loop only'); startStateLoop(); return; }
     });
 }
+
+// Load world list when page loads
+loadWorldList();
 
 // Initialize game with stored username or show login
 if (username) {

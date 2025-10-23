@@ -61,8 +61,18 @@
             <h2>Enter Your Username</h2>
             <div class="login-form">
                 <input type="text" id="usernameInput" placeholder="Username" maxlength="20">
+                <div class="world-select">
+                    <label for="worldSelect">Select World:</label>
+                    <select id="worldSelect" class="form-control">
+                        <option value="default">Default World</option>
+                        <!-- Other worlds will be loaded dynamically -->
+                    </select>
+                </div>
                 <button id="loginButton" class="btn btn-primary">Join Game</button>
                 <p id="loginError" class="login-error"></p>
+                <div class="world-actions">
+                    <a href="engine.html" class="btn btn-secondary">Create New World</a>
+                </div>
             </div>
         </div>
     </div>
