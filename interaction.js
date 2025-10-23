@@ -95,6 +95,8 @@ var peers = {}; // remoteId => { pc, dc, buffer: [{t,pos,rot}], mesh }
 var firestore = null;
 var signalsRef = null;
 var joined = false;
+// HUD / presence UI
+var hud = null;
 
 // helper: small random id
 function hex8(){
@@ -307,6 +309,22 @@ function createRemoteAvatarMesh(id){
     var color = colorFromId(id);
     mat.diffuseColor = new BABYLON.Color3(color.r/255, color.g/255, color.b/255);
     m.material = mat;
+    // create a DOM label for the avatar
+    var label = document.createElement('div');
+    label.className = 'ffny-remote-label';
+    label.textContent = id;
+    label.style.position = 'fixed';
+    label.style.transform = 'translate(-50%, -120%)';
+    label.style.pointerEvents = 'none';
+    label.style.padding = '2px 6px';
+    label.style.background = 'rgba(0,0,0,0.6)';
+    label.style.color = 'white';
+    label.style.fontSize = '11px';
+    label.style.borderRadius = '4px';
+    label.style.zIndex = '9998';
+    document.body.appendChild(label);
+    m._ffnyLabel = label;
+    updatePeerUI();
     return m;
 }
 
@@ -314,6 +332,38 @@ function colorFromId(id){
     var h = 0; for(var i=0;i<id.length;i++){ h = (h<<5)-h + id.charCodeAt(i); h |= 0; }
     var r = (h & 0xFF0000) >> 16; var g = (h & 0x00FF00) >> 8; var b = (h & 0x0000FF);
     return { r: Math.abs(r)%256, g: Math.abs(g)%256, b: Math.abs(b)%256 };
+}
+
+// Create HUD container for presence/debug info
+function ensureHud(){
+    if (hud) return hud;
+    hud = document.createElement('div');
+    hud.id = 'ffnyHud';
+    hud.style.position = 'fixed';
+    hud.style.right = '12px';
+    hud.style.top = '12px';
+    hud.style.zIndex = '9999';
+    hud.style.background = 'rgba(0,0,0,0.5)';
+    hud.style.color = 'white';
+    hud.style.fontSize = '12px';
+    hud.style.padding = '8px';
+    hud.style.borderRadius = '6px';
+    hud.innerHTML = '<div><strong>Me:</strong> <span id="ffnyMyId">' + clientId + '</span></div><div><strong>Peers:</strong><ul id="ffnyPeerList" style="margin:4px 0 0 0;padding:0 0 0 16px;"></ul></div>';
+    document.body.appendChild(hud);
+    return hud;
+}
+
+function updatePeerUI(){
+    ensureHud();
+    var list = document.getElementById('ffnyPeerList');
+    if (!list) return;
+    // clear
+    while(list.firstChild) list.removeChild(list.firstChild);
+    Object.keys(peers).forEach(function(id){
+        var li = document.createElement('li');
+        li.textContent = id + (peers[id] && peers[id].dc && peers[id].dc.readyState ? ' ('+peers[id].dc.readyState+')' : '');
+        list.appendChild(li);
+    });
 }
 
 // Periodic local state send over DataChannels or Firestore fallback
@@ -362,7 +412,32 @@ function updateRemotePlayers(){
             if (p.mesh) p.mesh.position = new BABYLON.Vector3(a.pos.x, a.pos.y, a.pos.z);
             if (p.mesh) p.mesh.rotation.y = a.rot.yaw;
         }
+        // update label position if exists
+        if (p.mesh && p.mesh._ffnyLabel) {
+            try {
+                var pos = p.mesh.getBoundingInfo().boundingSphere.centerWorld;
+                var screen = worldToScreen(pos, scene, camera, engine);
+                if (screen) {
+                    p.mesh._ffnyLabel.style.left = screen.x + 'px';
+                    p.mesh._ffnyLabel.style.top = screen.y + 'px';
+                    p.mesh._ffnyLabel.style.display = 'block';
+                } else {
+                    p.mesh._ffnyLabel.style.display = 'none';
+                }
+            } catch(e){}
+        }
     });
+    // update HUD peer list occasionally
+    try { updatePeerUI(); } catch(e){}
+}
+
+// Convert a BABYLON.Vector3 world position to screen coordinates
+function worldToScreen(worldPos, scene, camera, engine) {
+    if (!camera || !scene) return null;
+    var transform = BABYLON.Vector3.Project(worldPos, BABYLON.Matrix.Identity(), scene.getTransformMatrix(), camera.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight()));
+    if (!transform) return null;
+    // transform.x/y are in pixels
+    return { x: transform.x, y: transform.y };
 }
 
 // start everything (load firebase then start state loop)
