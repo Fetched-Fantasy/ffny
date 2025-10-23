@@ -710,6 +710,25 @@ footer {
 .settings-actions { display: flex; gap: 0.5rem; justify-content: flex-end; }
 
 /* World selection styles */
+.mode-select {
+    margin: 1rem 0;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.mode-select label {
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.mode-select input[type="radio"] {
+    cursor: pointer;
+}
+
 .world-select {
     margin: 1rem 0;
 }

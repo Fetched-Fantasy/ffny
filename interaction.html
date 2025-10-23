@@ -15,15 +15,15 @@
         gtag('config', 'G-BY4KC1P2F8');
     </script>
     <link rel="icon" href="https://raw.githubusercontent.com/Fetched-Fantasy/ffny/refs/heads/main/Copilot_20250903_093151.png" type="image/x-icon">
-    <title>Interaction Page</title>
+    <title>Fablous</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="mobile-controls.css">
     <script src="offline.js" defer></script>
 </head>
 <body id="interaction-page">
 <div class="container" style="position:relative;">
-        <h1 class="text-center">Interaction Page</h1>
-        <p>This is the interaction page.</p>
+        <h1 class="text-center">Fablous</h1>
+        <p>Welcome to Fablous!</p>
     </div>
     <!-- Pause overlay -->
     <div id="pauseOverlay" class="pause-overlay" aria-hidden="true">
@@ -61,14 +61,25 @@
             <h2>Enter Your Username</h2>
             <div class="login-form">
                 <input type="text" id="usernameInput" placeholder="Username" maxlength="20">
+                <div class="mode-select">
+                    <label>
+                        <input type="radio" name="gameMode" id="singlePlayerMode" checked>
+                        Single Player
+                    </label>
+                    <label>
+                        <input type="radio" name="gameMode" id="multiPlayerMode">
+                        Multiplayer
+                    </label>
+                </div>
                 <div class="world-select">
                     <label for="worldSelect">Select World:</label>
                     <select id="worldSelect" class="form-control">
                         <option value="default">Default World</option>
+                        <option value="home">My Home World</option>
                         <!-- Other worlds will be loaded dynamically -->
                     </select>
                 </div>
-                <button id="loginButton" class="btn btn-primary">Join Game</button>
+                <button id="loginButton" class="btn btn-primary">Start Game</button>
                 <p id="loginError" class="login-error"></p>
                 <div class="world-actions">
                     <a href="engine.html" class="btn btn-secondary">Create New World</a>

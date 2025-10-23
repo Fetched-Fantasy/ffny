@@ -241,14 +241,28 @@ function loadWorldList() {
     const worldSelect = document.getElementById('worldSelect');
     const worldsString = localStorage.getItem('ffny.worlds') || '[]';
     const worlds = JSON.parse(worldsString);
+    const homeWorld = localStorage.getItem('ffny.homeWorld');
     
-    // Clear existing options except default
-    while (worldSelect.options.length > 1) {
-        worldSelect.remove(1);
+    // Clear existing options except default and home
+    while (worldSelect.options.length > 2) {
+        worldSelect.remove(2);
+    }
+    
+    // Update home world option
+    if (homeWorld) {
+        const homeWorldData = worlds.find(w => w.name === homeWorld);
+        if (homeWorldData) {
+            worldSelect.querySelector('option[value="home"]').textContent = 'My Home World: ' + homeWorld;
+            worldSelect.querySelector('option[value="home"]').style.display = '';
+        } else {
+            worldSelect.querySelector('option[value="home"]').style.display = 'none';
+        }
+    } else {
+        worldSelect.querySelector('option[value="home"]').style.display = 'none';
     }
     
     // Add published worlds
-    worlds.filter(w => w.published).forEach(world => {
+    worlds.filter(w => w.published && w.name !== homeWorld).forEach(world => {
         const option = document.createElement('option');
         option.value = world.name;
         option.textContent = world.name;
@@ -276,11 +290,21 @@ function handleLogin() {
     const selectedWorld = worldSelect.value;
     let worldData = null;
     
-    if (selectedWorld !== 'default') {
+    if (selectedWorld === 'home') {
+        const homeWorldName = localStorage.getItem('ffny.homeWorld');
+        if (homeWorldName) {
+            const worldsString = localStorage.getItem('ffny.worlds') || '[]';
+            const worlds = JSON.parse(worldsString);
+            worldData = worlds.find(w => w.name === homeWorldName);
+        }
+    } else if (selectedWorld !== 'default') {
         const worldsString = localStorage.getItem('ffny.worlds') || '[]';
         const worlds = JSON.parse(worldsString);
         worldData = worlds.find(w => w.name === selectedWorld);
     }
+
+    // Check if multiplayer is enabled
+    const isMultiplayer = document.getElementById('multiPlayerMode').checked;
     
     // Clean up any existing connections before changing ID
     if (joined) {
@@ -310,8 +334,19 @@ function handleLogin() {
     // Hide login
     loginOverlay.style.display = 'none';
     
-    // Start game networking
-    startNetworking();
+    // Store username
+    localStorage.setItem('ffny.username', newUsername);
+    username = newUsername;
+    clientId = username;
+    
+    // Reset networking state
+    joined = false;
+    peers = {};
+    
+    // Start networking only in multiplayer mode
+    if (isMultiplayer) {
+        startNetworking();
+    }
 }
 
 if (loginButton) {

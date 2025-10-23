@@ -522,6 +522,32 @@
         document.getElementById('saveWorld').onclick = saveWorld;
         document.getElementById('loadWorld').onclick = loadWorld;
         document.getElementById('publishWorld').onclick = publishWorld;
+        document.getElementById('setHomeWorld').onclick = setHomeWorld;
+
+        function setHomeWorld() {
+            const worldName = document.getElementById('worldName').value.trim();
+            if (!worldName) {
+                alert('Please enter a world name first');
+                return;
+            }
+
+            const worldData = serializeWorld();
+            const worldsString = localStorage.getItem('ffny.worlds') || '[]';
+            const worlds = JSON.parse(worldsString);
+            
+            // Update existing or add new
+            const existingIndex = worlds.findIndex(w => w.name === worldData.name);
+            if (existingIndex >= 0) {
+                worlds[existingIndex] = { ...worldData, published: true };
+            } else {
+                worlds.push({ ...worldData, published: true });
+            }
+            
+            localStorage.setItem('ffny.worlds', JSON.stringify(worlds));
+            localStorage.setItem('ffny.homeWorld', worldName);
+            
+            alert('World saved and set as your home world!');
+        }
     </script>
 </body>
 </html>
