@@ -28,7 +28,7 @@
       "https://www.youtube.com/@FetchedFantasy",
       "https://twitter.com/",
       "https://vrchat.com/home/group/grp_e219fa60-9a36-45f2-a5c9-cd848ce0f6ed"
-    ],
+,
     "memberOf": {
       "@type": "VirtualLocation",
       "name": "VRChat",
@@ -45,7 +45,7 @@
   }
   </script>
   <link rel="stylesheet" href="style.css">
-
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -65,9 +65,9 @@
 <body>
   <div class="parallax">
     <div class="sidebar">
-      <button class="sidebar-toggle">☰</button>
+<button class="sidebar-toggle btn btn-primary">☰</button>
       </div>
-    <div class="header">
+<div class="header container">
       <h1>Fetched Fantasy</h1>
       <div class="hamburger">
         <div class="line"></div>
@@ -77,23 +77,23 @@
         </div>
     <div class="nav-container">
       <ul class="nav">
-        <li><a href="">Home</a></li>
-        <li><a href="about">About</a></li>
-        <li><a href="events">Events</a></li>
-        <li><a href="https://ffny.on.spiceworks.com/portal/">Contact</a></li>
-        <Li><a href="https://ffnystatus.statuspage.io/">Status</a></Li>
+<li class="nav-item"><a class="nav-link" href="">Home</a></li>
+<li class="nav-item"><a class="nav-link" href="about">About</a></li>
+<li class="nav-item"><a class="nav-link" href="events">Events</a></li>
+<li class="nav-item"><a class="nav-link" href="https://ffny.on.spiceworks.com/portal/">Contact</a></li>
+<Li  class="nav-item"><a  class="nav-link" href="https://ffnystatus.statuspage.io/">Status</a></Li>
       </ul>
   </div>
-    <section id="change-log" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); width: 250px; background: rgba(0, 0, 0, 0.5); padding: 20px; border-radius: 10px; color: white;">
-      <h2>Change Log</h2>
-      <ul id="change-log-list">
+<section id="change-log" class="card" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); width: 250px; background: rgba(0, 0, 0, 0.5); padding: 20px; border-radius: 10px; color: white;">
+<h2  class="card-header">Change Log</h2>
+<ul class="list-group list-group-flush" id="change-log-list">
         <!-- Change log entries will be dynamically generated here -->
       </ul>
     </section>
     <div class="container">
       <div class="top-right-buttons">
-        <a href="https://discord.gg/5MZyyq3MSw" class="discord-link" target="_blank">Our Discord server!</a>
-        <a href="https://vrchat.com/home/group/grp_e219fa60-9a36-45f2-a5c9-cd848ce0f6ed" class="vrchat-link" target="_blank">Our VRChat group!</a>
+<a href="https://discord.gg/5MZyyq3MSw" class="discord-link btn btn-primary" target="_blank">Our Discord server!</a>
+<a href="https://vrchat.com/home/group/grp_e219fa60-9a36-45f2-a5c9-cd848ce0f6ed" class="vrchat-link btn btn-primary" target="_blank">Our VRChat group!</a>
   </div>
       <!-- Reusable Modal -->
       <div id="profileModal" class="modal">

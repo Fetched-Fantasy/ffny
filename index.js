@@ -19,26 +19,31 @@ document.addEventListener('DOMContentLoaded', function() {
     return `${month}-${day}-${year}`;
   }
 
-  // Fetch the changelog data from changelog.json
-  fetch('changelog.json')
-    .then(response => {
-      console.log("Changelog response:", response);
-      return response.json();
-    })
-    .then(data => {
-      console.log("Changelog data:", data);
-      // Iterate over the data and generate the list items
-      data.forEach(entry => {
-        console.log("Changelog entry:", entry);
-        const li = document.createElement('li');
-        // Format the date using the formatDate function
-        const formattedDate = formatDate(entry.date);
-        li.textContent = `[${formattedDate}] - ${entry.description}`;
-        changeLogList.appendChild(li);
-      });
-    })
-    .catch(error => {
-      console.error('Error fetching changelog data:', error);
-      changeLogList.innerHTML = `<p>Failed to load change log: ${error.message}</p>`; // Added error message
+  // Function to display changelog entries
+  function displayChangelog(data) {
+    changeLogList.innerHTML = ''; // Clear existing entries
+    data.forEach(entry => {
+      const li = document.createElement('li');
+      const formattedDate = formatDate(entry.date);
+      li.textContent = `[${formattedDate}] - ${entry.description}`;
+      changeLogList.appendChild(li);
     });
+  }
+
+  // Load changelog data
+  function loadChangelog() {
+    fetch('changelog.json')
+      .then(response => response.json())
+      .then(data => {
+        console.log("Changelog data:", data);
+        displayChangelog(data);
+      })
+      .catch(error => {
+        console.error('Error fetching changelog data:', error);
+        changeLogList.innerHTML = `<p>Failed to load change log: ${error.message}</p>`;
+      });
+  }
+
+  // Load changelog data initially
+  loadChangelog();
 });
