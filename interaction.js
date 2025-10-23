@@ -149,7 +149,7 @@ window.addEventListener('resize', function () {
 // Ably configuration
 var ABLY_API_KEY = 'XRHh7Q.AYC1KA:pl1HM7BjoJeiHQh1xF2kSShs5Tfy1OKjb1spOnQIQKQ'; // Replace with your Ably API key
 
-var USE_FIRESTORE_FALLBACK = true; // allow low-rate relay via Firestore when DataChannel unavailable
+var USE_ABLY_FALLBACK = true; // allow low-rate relay via Ably when DataChannel unavailable
 var ROOM_ID = (function(){
     // derive a room id from pathname so pages in same site connect together; change if you want separate rooms
     return 'ffny_room_' + (location.pathname.replace(/\W+/g,'_') || 'default');
@@ -344,20 +344,30 @@ function handleSignal(msg){
             // set remote desc and create answer
             ensurePeer(from, false).then(function(peer){
                 var pc = peer.pc;
-                pc.setRemoteDescription(new RTCSessionDescription(msg.sdp)).then(function(){
+                pc.setRemoteDescription(new RTCSessionDescription(msg.sdp))
+                .then(function(){
                     return pc.createAnswer();
-                }).then(function(answer){
+                })
+                .then(function(answer){
                     return pc.setLocalDescription(answer);
-                }).then(function(){
+                })
+                .then(function(){
                     // send answer
-                    signalsRef.add({ type: 'answer', from: clientId, to: from, sdp: pc.localDescription, t: Date.now() }).catch(()=>{});
-                }).catch(function(err){ console.warn('handle offer err', err); });
+                    signalChannel.publish('signal', { type: 'answer', from: clientId, to: from, sdp: pc.localDescription, t: Date.now() });
+                })
+                .catch(function(err){ 
+                    console.warn('handle offer err', err); 
+                });
+            }).catch(function(err){ 
+                console.warn('handle offer err', err); 
             });
             break;
         case 'answer':
             if (msg.to && msg.to !== clientId) return;
             if (!peers[from]) return;
-            peers[from].pc.setRemoteDescription(new RTCSessionDescription(msg.sdp)).catch(function(e){ console.warn('setRemoteAnswer err', e); });
+            peers[from].pc.setRemoteDescription(new RTCSessionDescription(msg.sdp)).catch(function(e){ 
+                console.warn('setRemoteAnswer err', e); 
+            });
             break;
         case 'ice':
             if (msg.to && msg.to !== clientId) return;
@@ -371,7 +381,7 @@ function handleSignal(msg){
             }
             break;
         case 'relay-state':
-            // fallback: other client's state relayed via Firestore
+            // fallback: other client's state relayed via Ably
             if (msg.to && msg.to !== clientId) return;
             handleRemoteState(msg.state, msg.from);
             break;
@@ -390,8 +400,8 @@ function createOfferTo(remoteId){
         pc.createOffer().then(function(offer){
             return pc.setLocalDescription(offer);
         }).then(function(){
-            // send offer via Firestore
-            signalsRef.add({ type: 'offer', from: clientId, to: remoteId, sdp: pc.localDescription, t: Date.now() }).catch(()=>{});
+            // send offer via Ably
+            signalChannel.publish('signal', { type: 'offer', from: clientId, to: remoteId, sdp: pc.localDescription, t: Date.now() });
         }).catch(function(err){ console.warn('createOffer err', err); });
     });
 }
@@ -501,11 +511,13 @@ function removePeer(remoteId){
 // Attempt to clean up our state doc and notify peers when the page is closed or hidden
 function cleanupOnUnload(){
     try {
-        if (statesRef) {
-            statesRef.doc(clientId).delete().catch(function(){});
+        // Leave presence
+        if (signalChannel && signalChannel.presence) {
+            signalChannel.presence.leave();
         }
-        if (signalsRef) {
-            signalsRef.add({ type: 'leave', from: clientId, t: Date.now(), to: null }).catch(function(){});
+        // Publish leave message
+        if (signalChannel) {
+            signalChannel.publish('signal', { type: 'leave', from: clientId, t: Date.now(), to: null });
         }
     } catch(e){}
 }
@@ -514,7 +526,7 @@ window.addEventListener('beforeunload', function(){ cleanupOnUnload(); });
 // visibilitychange can help when tab is closed in some browsers
 document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'hidden') cleanupOnUnload(); });
 
-// handle incoming remote state (from DataChannel or Firestore fallback)
+// handle incoming remote state (from DataChannel or Ably fallback)
 function handleRemoteState(state, fromId){
     if (!state || !fromId) return;
     var p = peers[fromId];
@@ -623,7 +635,7 @@ function updatePeerUI(){
     });
 }
 
-// Periodic local state send over DataChannels or Firestore fallback
+// Periodic local state send over DataChannels or Ably fallback
 var stateSendInterval = null;
 function startStateLoop(){
     if (stateSendInterval) return;
@@ -653,21 +665,18 @@ function startStateLoop(){
                     p.dc.send(JSON.stringify(state)); 
                 } catch(e){
                     console.warn('DataChannel send failed, using fallback', e);
-                    if (statesRef) {
+                    // Use Ably fallback if DataChannel fails
+                    if (USE_ABLY_FALLBACK && stateChannel) {
                         try {
-                            statesRef.doc(clientId).set({ 
-                                state: state, 
-                                t: Date.now(), 
-                                expiresAt: new Date(Date.now() + STATE_TTL_MS) 
-                            }).catch(function(){});
-                        } catch(e){}
+                            stateChannel.publish('state', state);
+                        } catch(e){ console.warn('state publish err', e); }
                     }
                 }
             }
         });
         
         // fallback relay via Ably at low rate
-        if (USE_FIRESTORE_FALLBACK && stateChannel) {
+        if (USE_ABLY_FALLBACK && stateChannel) {
             try {
                 stateChannel.publish('state', state);
             } catch(e){ console.warn('state publish err', e); }
