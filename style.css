@@ -32,6 +32,13 @@ body {
   min-height: 100vh; /* Ensure full height */
   background-color: #23272a !important; /* Discord Darker Gray */
 }
+
+/*ADDITION*/
+body#interaction-page {
+ background-color: #23272a;
+ color: white;
+}
+
 .container {
     max-width: 900px;
     margin: 2rem auto;
