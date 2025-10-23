@@ -24,6 +24,16 @@ var createScene = function () {
     camera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
     camera.speed = 0.2;
 
+    // Reduce inertia (smoothing) to make turning less "glidy"
+    // Lower values mean less smoothing; adjust to taste (0 = no smoothing)
+    camera.inertia = 0.05;
+
+    // Increase angularSensibility to require slightly more movement for the same rotation
+    // (higher = less sensitive). Adjust to taste.
+    if (typeof camera.angularSensibility !== 'undefined') {
+        camera.angularSensibility = 2000;
+    }
+
     // WASD controls
     camera.keysUp = [87]; // W
     camera.keysDown = [83]; // S
