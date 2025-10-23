@@ -39,3 +39,14 @@ fetch('changelog.json')
     console.error('Error fetching changelog data:', error);
     changeLogList.innerHTML = `<p>Failed to load change log: ${error.message}</p>`; // Added error message
   });
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize CacheP2P
+  const cacheP2P = new CacheP2P();
+
+  // Start CacheP2P
+  cacheP2P.start({
+    assets: ['changelog.json']
+  });
+});
+
