@@ -57,12 +57,331 @@ var createScene = function () {
 var scene = createScene();
 
 engine.runRenderLoop(function () {
+    // Update remote players (interpolation/extrapolation)
+    try { updateRemotePlayers(); } catch (e) { /* ignore until networking initialized */ }
     scene.render();
 });
 
 window.addEventListener('resize', function () {
     try { engine.resize(); } catch (e) {}
 });
+
+// --------------------
+// Networking: Firestore signalling + WebRTC DataChannels
+// - Uses Firestore only for signalling (offer/answer/ICE) and optional low-rate relay fallback.
+// - DataChannels carry live position updates (JSON) at ~10Hz.
+// Paste your Firebase config into `FIREBASE_CONFIG` below.
+// --------------------
+
+// Minimal configuration: replace with your Firebase project's config
+var FIREBASE_CONFIG = {
+    apiKey: "AIzaSyBvx38TEpit57pNU8dHkx39Til872x2kC4",
+    authDomain: "ffny-interact.firebaseapp.com",
+    projectId: "ffny-interact",
+    storageBucket: "ffny-interact.firebasestorage.app",
+    messagingSenderId: "693923451215",
+    appId: "1:693923451215:web:f40eaa29ad63198776353a",
+};
+
+var USE_FIRESTORE_FALLBACK = true; // allow low-rate relay via Firestore when DataChannel unavailable
+var ROOM_ID = (function(){
+    // derive a room id from pathname so pages in same site connect together; change if you want separate rooms
+    return 'ffny_room_' + (location.pathname.replace(/\W+/g,'_') || 'default');
+})();
+
+// runtime state
+var clientId = hex8();
+var peers = {}; // remoteId => { pc, dc, buffer: [{t,pos,rot}], mesh }
+var firestore = null;
+var signalsRef = null;
+var joined = false;
+
+// helper: small random id
+function hex8(){
+    var a = new Uint8Array(8);
+    crypto.getRandomValues(a);
+    return Array.from(a).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// lightweight dynamic load of firebase compat scripts then init firestore
+function loadFirebaseAndInit(cb){
+    if (window.firebase && window.firebase.firestore) { initFirestore(); if (cb) cb(); return; }
+    var s1 = document.createElement('script');
+    s1.src = 'https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js';
+    s1.onload = function(){
+        var s2 = document.createElement('script');
+        s2.src = 'https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js';
+        s2.onload = function(){ initFirestore(); if (cb) cb(); };
+        s2.onerror = function(){ console.warn('Failed to load firebase-firestore script'); if (cb) cb(new Error('firestore load failed')); };
+        document.head.appendChild(s2);
+    };
+    s1.onerror = function(){ console.warn('Failed to load firebase-app script'); if (cb) cb(new Error('firebase load failed')); };
+    document.head.appendChild(s1);
+}
+
+function initFirestore(){
+    try {
+        if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+        firestore = firebase.firestore();
+        signalsRef = firestore.collection('rooms').doc(ROOM_ID).collection('signals');
+        console.log('Firestore initialized for room', ROOM_ID);
+        startSignalling();
+    } catch (e) {
+        console.warn('Firestore init failed', e);
+    }
+}
+
+// Signalling: listen to signals addressed to us (to==clientId or to==null for broadcast)
+function startSignalling(){
+    if (!signalsRef) return;
+    signalsRef.where('to','in',[clientId,null]).onSnapshot(function(snapshot){
+        snapshot.docChanges().forEach(function(change){
+            if (change.type === 'added'){
+                var msg = change.doc.data();
+                // ignore our own messages
+                if (msg.from === clientId) return;
+                handleSignal(msg);
+                // cleanup one-off messages to keep collection small
+                // keep candidate messages for debugging; remove offers/answers after handled
+                if (msg.type === 'offer' || msg.type === 'answer' || msg.type === 'join') {
+                    change.doc.ref.delete().catch(()=>{});
+                }
+            }
+        });
+    });
+    // announce presence
+    signalsRef.add({ type: 'join', from: clientId, t: Date.now(), to: null }).catch(()=>{});
+    joined = true;
+}
+
+function handleSignal(msg){
+    if (!msg || !msg.type) return;
+    var from = msg.from;
+    switch(msg.type){
+        case 'join':
+            // create an offer to the joining peer (we are the older peer)
+            if (from === clientId) return;
+            // avoid double-offer: only create offer if our id is lexicographically greater to pick initiator consistently
+            if (clientId > from) {
+                createOfferTo(from);
+            }
+            break;
+        case 'offer':
+            if (msg.to && msg.to !== clientId) return;
+            // set remote desc and create answer
+            ensurePeer(from, false).then(function(peer){
+                var pc = peer.pc;
+                pc.setRemoteDescription(new RTCSessionDescription(msg.sdp)).then(function(){
+                    return pc.createAnswer();
+                }).then(function(answer){
+                    return pc.setLocalDescription(answer);
+                }).then(function(){
+                    // send answer
+                    signalsRef.add({ type: 'answer', from: clientId, to: from, sdp: pc.localDescription, t: Date.now() }).catch(()=>{});
+                }).catch(function(err){ console.warn('handle offer err', err); });
+            });
+            break;
+        case 'answer':
+            if (msg.to && msg.to !== clientId) return;
+            if (!peers[from]) return;
+            peers[from].pc.setRemoteDescription(new RTCSessionDescription(msg.sdp)).catch(function(e){ console.warn('setRemoteAnswer err', e); });
+            break;
+        case 'ice':
+            if (msg.to && msg.to !== clientId) return;
+            if (!peers[from]) {
+                // create peer to add candidate after pc created
+                ensurePeer(from, false).then(function(){
+                    addIceToPeer(from, msg.candidate);
+                });
+            } else {
+                addIceToPeer(from, msg.candidate);
+            }
+            break;
+        case 'relay-state':
+            // fallback: other client's state relayed via Firestore
+            if (msg.to && msg.to !== clientId) return;
+            handleRemoteState(msg.state, msg.from);
+            break;
+    }
+}
+
+function addIceToPeer(from, cand){
+    try {
+        if (cand && peers[from] && peers[from].pc) peers[from].pc.addIceCandidate(new RTCIceCandidate(cand)).catch(()=>{});
+    } catch(e){}
+}
+
+function createOfferTo(remoteId){
+    return ensurePeer(remoteId, true).then(function(peer){
+        var pc = peer.pc;
+        pc.createOffer().then(function(offer){
+            return pc.setLocalDescription(offer);
+        }).then(function(){
+            // send offer via Firestore
+            signalsRef.add({ type: 'offer', from: clientId, to: remoteId, sdp: pc.localDescription, t: Date.now() }).catch(()=>{});
+        }).catch(function(err){ console.warn('createOffer err', err); });
+    });
+}
+
+function ensurePeer(remoteId, initiator){
+    if (peers[remoteId]) return Promise.resolve(peers[remoteId]);
+    var pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+    var peer = { pc: pc, dc: null, buffer: [], mesh: null };
+    peers[remoteId] = peer;
+
+    pc.onicecandidate = function(ev){
+        if (ev.candidate) {
+            // send candidate via firestore
+            signalsRef.add({ type: 'ice', from: clientId, to: remoteId, candidate: ev.candidate.toJSON(), t: Date.now() }).catch(()=>{});
+        }
+    };
+
+    pc.onconnectionstatechange = function(){
+        if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed' || pc.connectionState === 'closed'){
+            removePeer(remoteId);
+        }
+    };
+
+    pc.ondatachannel = function(ev){
+        setupDataChannel(remoteId, ev.channel);
+    };
+
+    // create datachannel if initiator
+    if (initiator){
+        var dc = pc.createDataChannel('game');
+        setupDataChannel(remoteId, dc);
+    }
+
+    return Promise.resolve(peer);
+}
+
+function setupDataChannel(remoteId, dc){
+    var peer = peers[remoteId];
+    if (!peer) return;
+    peer.dc = dc;
+    dc.binaryType = 'arraybuffer';
+    dc.onopen = function(){ console.log('DataChannel open to', remoteId); };
+    dc.onclose = function(){ console.log('DataChannel closed to', remoteId); };
+    dc.onmessage = function(ev){
+        try {
+            var msg = typeof ev.data === 'string' ? JSON.parse(ev.data) : JSON.parse(new TextDecoder().decode(ev.data));
+            if (msg && msg.type === 'state') handleRemoteState(msg, remoteId);
+        } catch(e){ console.warn('dc msg parse err', e); }
+    };
+}
+
+function removePeer(remoteId){
+    var p = peers[remoteId];
+    if (!p) return;
+    try { if (p.dc) p.dc.close(); } catch(e){}
+    try { if (p.pc) p.pc.close(); } catch(e){}
+    if (p.mesh) {
+        try { p.mesh.dispose(); } catch(e){}
+    }
+    delete peers[remoteId];
+}
+
+// handle incoming remote state (from DataChannel or Firestore fallback)
+function handleRemoteState(state, fromId){
+    if (!state || !fromId) return;
+    var p = peers[fromId];
+    if (!p) {
+        // create a placeholder peer so we can store buffer and create mesh
+        ensurePeer(fromId, false).then(function(){ /* continue */ });
+        p = peers[fromId];
+    }
+    if (!p.buffer) p.buffer = [];
+    // normalize numbers
+    var entry = { t: state.t || Date.now(), pos: { x: +state.pos.x, y: +state.pos.y, z: +state.pos.z }, rot: { yaw: +state.rot.yaw, pitch: +state.rot.pitch } };
+    p.buffer.push(entry);
+    // keep last few
+    while (p.buffer.length > 20) p.buffer.shift();
+    // ensure mesh exists
+    if (!p.mesh) p.mesh = createRemoteAvatarMesh(fromId);
+}
+
+function createRemoteAvatarMesh(id){
+    var m = BABYLON.MeshBuilder.CreateSphere('remote_' + id, { diameter: 0.6 }, scene);
+    var mat = new BABYLON.StandardMaterial('m_' + id, scene);
+    // color by id hash
+    var color = colorFromId(id);
+    mat.diffuseColor = new BABYLON.Color3(color.r/255, color.g/255, color.b/255);
+    m.material = mat;
+    return m;
+}
+
+function colorFromId(id){
+    var h = 0; for(var i=0;i<id.length;i++){ h = (h<<5)-h + id.charCodeAt(i); h |= 0; }
+    var r = (h & 0xFF0000) >> 16; var g = (h & 0x00FF00) >> 8; var b = (h & 0x0000FF);
+    return { r: Math.abs(r)%256, g: Math.abs(g)%256, b: Math.abs(b)%256 };
+}
+
+// Periodic local state send over DataChannels or Firestore fallback
+var stateSendInterval = null;
+function startStateLoop(){
+    if (stateSendInterval) return;
+    stateSendInterval = setInterval(function(){
+        if (!camera) return;
+        var state = { type: 'state', id: clientId, t: Date.now(), pos: { x: camera.position.x, y: camera.position.y, z: camera.position.z }, rot: { yaw: camera.rotation.y, pitch: camera.rotation.x } };
+        // send over datachannels
+        Object.keys(peers).forEach(function(remoteId){
+            var p = peers[remoteId];
+            if (p && p.dc && p.dc.readyState === 'open'){
+                try { p.dc.send(JSON.stringify(state)); } catch(e){}
+            }
+        });
+        // fallback relay via Firestore at low rate
+        if (USE_FIRESTORE_FALLBACK && signalsRef) {
+            signalsRef.add({ type: 'relay-state', from: clientId, to: null, state: state, t: Date.now() }).catch(()=>{});
+        }
+    }, 100); // 10Hz
+}
+
+// interpolation/render update called each frame
+function updateRemotePlayers(){
+    var now = Date.now();
+    var renderTime = now - 120; // interpolation delay
+    Object.keys(peers).forEach(function(id){
+        var p = peers[id];
+        if (!p || !p.buffer || p.buffer.length === 0) return;
+        var buf = p.buffer;
+        // drop old
+        while (buf.length >= 2 && buf[1].t <= renderTime) buf.shift();
+        if (buf.length >= 2){
+            var a = buf[0], b = buf[1];
+            var alpha = (renderTime - a.t) / (b.t - a.t);
+            alpha = Math.max(0, Math.min(1, alpha));
+            var x = a.pos.x + (b.pos.x - a.pos.x) * alpha;
+            var y = a.pos.y + (b.pos.y - a.pos.y) * alpha;
+            var z = a.pos.z + (b.pos.z - a.pos.z) * alpha;
+            if (p.mesh) p.mesh.position = new BABYLON.Vector3(x,y,z);
+            var yaw = a.rot.yaw + (b.rot.yaw - a.rot.yaw) * alpha;
+            if (p.mesh) p.mesh.rotation.y = yaw;
+        } else if (buf.length === 1){
+            var a = buf[0];
+            if (p.mesh) p.mesh.position = new BABYLON.Vector3(a.pos.x, a.pos.y, a.pos.z);
+            if (p.mesh) p.mesh.rotation.y = a.rot.yaw;
+        }
+    });
+}
+
+// start everything (load firebase then start state loop)
+function startNetworking(){
+    if (!FIREBASE_CONFIG || !FIREBASE_CONFIG.projectId) {
+        console.warn('Firebase config missing: paste your Firebase config into interaction.js FIREBASE_CONFIG');
+        // still start state loop so local sends can be used if DataChannels exist via direct peer connections (unlikely without signalling)
+        startStateLoop();
+        return;
+    }
+    loadFirebaseAndInit(function(err){
+        if (err) { console.warn('Firebase load failed, starting state loop only'); startStateLoop(); return; }
+        startStateLoop();
+    });
+}
+
+// start networking after a short delay so the scene is ready
+setTimeout(startNetworking, 1000);
+
 
 // Pause menu logic
 var isPaused = false;
