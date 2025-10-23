@@ -140,21 +140,14 @@ window.addEventListener('resize', function () {
 });
 
 // --------------------
-// Networking: Firestore signalling + WebRTC DataChannels
-// - Uses Firestore only for signalling (offer/answer/ICE) and optional low-rate relay fallback.
+// Networking: Ably signalling + WebRTC DataChannels
+// - Uses Ably for signalling (offer/answer/ICE) and optional low-rate relay fallback.
 // - DataChannels carry live position updates (JSON) at ~10Hz.
-// Paste your Firebase config into `FIREBASE_CONFIG` below.
+// Paste your Ably API key below.
 // --------------------
 
-// Minimal configuration: replace with your Firebase project's config
-var FIREBASE_CONFIG = {
-    apiKey: "AIzaSyBvx38TEpit57pNU8dHkx39Til872x2kC4",
-    authDomain: "ffny-interact.firebaseapp.com",
-    projectId: "ffny-interact",
-    storageBucket: "ffny-interact.firebasestorage.app",
-    messagingSenderId: "693923451215",
-    appId: "1:693923451215:web:f40eaa29ad63198776353a",
-};
+// Ably configuration
+var ABLY_API_KEY = 'XRHh7Q.AYC1KA:pl1HM7BjoJeiHQh1xF2kSShs5Tfy1OKjb1spOnQIQKQ'; // Replace with your Ably API key
 
 var USE_FIRESTORE_FALLBACK = true; // allow low-rate relay via Firestore when DataChannel unavailable
 var ROOM_ID = (function(){
@@ -164,14 +157,13 @@ var ROOM_ID = (function(){
 
 // runtime state
 var username = localStorage.getItem('ffny.username') || '';
-var clientId = username || hex8(); // use username if available, otherwise random
+var clientId = null; // Will be set after login
 var peers = {}; // remoteId => { pc, dc, buffer: [{t,pos,rot}], mesh }
-var firestore = null;
-var signalsRef = null;
-var statesRef = null;
+var ably = null;
+var signalChannel = null;
+var stateChannel = null;
 var joined = false;
-// State TTL (milliseconds) - used to set expiresAt for Firestore TTL policy and stale cleanup
-var STATE_TTL_MS = 30000; // 30 seconds
+var STATE_TTL_MS = 30000; // 30 seconds (used for cleanup)
 // HUD / presence UI
 var hud = null;
 
@@ -195,12 +187,32 @@ function handleLogin() {
         loginError.textContent = 'Username must be less than 20 characters';
         return;
     }
+    
+    // Clean up any existing connections before changing ID
+    if (joined) {
+        cleanupOnUnload();
+        Object.keys(peers).forEach(function(peerId) {
+            removePeer(peerId);
+        });
+        if (firestore) {
+            try {
+                signalsRef.add({ type: 'leave', from: clientId, t: Date.now(), to: null }).catch(function(){});
+            } catch(e){}
+        }
+    }
+    
     // Store username
     localStorage.setItem('ffny.username', newUsername);
     username = newUsername;
     clientId = username;
+    
+    // Reset networking state
+    joined = false;
+    peers = {};
+    
     // Hide login
     loginOverlay.style.display = 'none';
+    
     // Start game networking
     startNetworking();
 }
@@ -234,71 +246,85 @@ function hex8(){
     return Array.from(a).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-// lightweight dynamic load of firebase compat scripts then init firestore
-function loadFirebaseAndInit(cb){
-    if (window.firebase && window.firebase.firestore) { initFirestore(); if (cb) cb(); return; }
-    var s1 = document.createElement('script');
-    s1.src = 'https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js';
-    s1.onload = function(){
-        var s2 = document.createElement('script');
-        s2.src = 'https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js';
-        s2.onload = function(){ initFirestore(); if (cb) cb(); };
-        s2.onerror = function(){ console.warn('Failed to load firebase-firestore script'); if (cb) cb(new Error('firestore load failed')); };
-        document.head.appendChild(s2);
-    };
-    s1.onerror = function(){ console.warn('Failed to load firebase-app script'); if (cb) cb(new Error('firebase load failed')); };
-    document.head.appendChild(s1);
+// Load Ably SDK and initialize connection
+function loadAblyAndInit(cb) {
+    if (window.Ably) { initAbly(); if (cb) cb(); return; }
+    var script = document.createElement('script');
+    script.src = 'https://cdn.ably.io/lib/ably.min-1.js';
+    script.onload = function() { initAbly(); if (cb) cb(); };
+    script.onerror = function() { console.warn('Failed to load Ably script'); if (cb) cb(new Error('ably load failed')); };
+    document.head.appendChild(script);
 }
 
-function initFirestore(){
+function initAbly() {
     try {
-        if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
-        firestore = firebase.firestore();
-        signalsRef = firestore.collection('rooms').doc(ROOM_ID).collection('signals');
-        statesRef = firestore.collection('rooms').doc(ROOM_ID).collection('states');
-        console.log('Firestore initialized for room', ROOM_ID);
-        startSignalling();
-    } catch (e) {
-        console.warn('Firestore init failed', e);
-    }
-}
-
-// Signalling: listen to signals addressed to us (to==clientId or to==null for broadcast)
-function startSignalling(){
-    if (!signalsRef) return;
-    signalsRef.where('to','in',[clientId,null]).onSnapshot(function(snapshot){
-        snapshot.docChanges().forEach(function(change){
-            if (change.type === 'added'){
-                var msg = change.doc.data();
-                // ignore our own messages
-                if (msg.from === clientId) return;
-                handleSignal(msg);
-                // cleanup one-off messages to keep collection small
-                // keep candidate messages for debugging; remove offers/answers after handled
-                if (msg.type === 'offer' || msg.type === 'answer' || msg.type === 'join') {
-                    change.doc.ref.delete().catch(()=>{});
-                }
-            }
-        });
-    });
-    // announce presence
-    signalsRef.add({ type: 'join', from: clientId, t: Date.now(), to: null }).catch(()=>{});
-    joined = true;
-    // listen for low-rate state updates from other peers (per-client documents)
-    if (statesRef) {
-        statesRef.onSnapshot(function(snap){
-            snap.docChanges().forEach(function(change){
-                var id = change.doc.id;
-                if (id === clientId) return; // ignore our own
-                if (change.type === 'added' || change.type === 'modified'){
-                    var data = change.doc.data();
-                    if (data && data.state) handleRemoteState(data.state, id);
-                } else if (change.type === 'removed'){
-                    removePeer(id);
+        ably = new Ably.Realtime({ key: ABLY_API_KEY, clientId: clientId });
+        ably.connection.on('connected', function() {
+            console.log('Ably connected');
+            signalChannel = ably.channels.get('game:' + ROOM_ID + ':signals');
+            stateChannel = ably.channels.get('game:' + ROOM_ID + ':states');
+            
+            // Subscribe to presence for peer discovery
+            signalChannel.presence.subscribe('enter', function(member) {
+                if (member.clientId !== clientId) {
+                    handlePresence('join', member.clientId);
                 }
             });
-        }, function(err){ console.warn('statesRef snapshot err', err); });
+            
+            signalChannel.presence.subscribe('leave', function(member) {
+                if (member.clientId !== clientId) {
+                    handlePresence('leave', member.clientId);
+                }
+            });
+
+            // Subscribe to signals
+            signalChannel.subscribe(function(msg) {
+                // Handle messages addressed to us or broadcast
+                if (!msg.data.to || msg.data.to === clientId) {
+                    handleSignal(msg.data);
+                }
+            });
+
+            // Subscribe to state updates
+            stateChannel.subscribe(function(msg) {
+                if (msg.data.id !== clientId) {
+                    handleRemoteState(msg.data, msg.data.id);
+                }
+            });
+
+            // Enter presence
+            signalChannel.presence.enter();
+            console.log('Ably initialized for room', ROOM_ID);
+            startSignalling();
+        });
+
+        ably.connection.on('failed', function() {
+            console.warn('Ably connection failed');
+        });
+
+    } catch (e) {
+        console.warn('Ably init failed', e);
     }
+}
+
+// Handle presence events (join/leave)
+function handlePresence(type, fromId) {
+    if (type === 'join') {
+        // Create offer to joining peer if we're the 'greater' ID
+        if (clientId > fromId) {
+            createOfferTo(fromId);
+        }
+    } else if (type === 'leave') {
+        removePeer(fromId);
+    }
+}
+
+// Signalling: start presence and handle incoming messages
+function startSignalling() {
+    if (!signalChannel) return;
+    joined = true;
+    // We don't need to announce presence as it's handled by Ably presence system
+    startStateLoop();
 }
 
 function handleSignal(msg){
@@ -378,8 +404,14 @@ function ensurePeer(remoteId, initiator){
 
     pc.onicecandidate = function(ev){
         if (ev.candidate) {
-            // send candidate via firestore
-            signalsRef.add({ type: 'ice', from: clientId, to: remoteId, candidate: ev.candidate.toJSON(), t: Date.now() }).catch(()=>{});
+            // send candidate via Ably
+            signalChannel.publish('signal', { 
+                type: 'ice', 
+                from: clientId, 
+                to: remoteId, 
+                candidate: ev.candidate.toJSON(), 
+                t: Date.now() 
+            });
         }
     };
 
@@ -544,14 +576,11 @@ function startStateLoop(){
                 try { p.dc.send(JSON.stringify(state)); } catch(e){}
             }
         });
-        // fallback relay via Firestore at low rate: update a per-client doc instead of adding many small documents
-        if (USE_FIRESTORE_FALLBACK && statesRef) {
+        // fallback relay via Ably at low rate
+        if (USE_FIRESTORE_FALLBACK && stateChannel) {
             try {
-                var expiresAt = new Date(Date.now() + STATE_TTL_MS);
-                statesRef.doc(clientId).set({ state: state, t: Date.now(), expiresAt: expiresAt }).catch(function(err){
-                    console.warn('Failed to write state doc', err);
-                });
-            } catch(e){ console.warn('statesRef set err', e); }
+                stateChannel.publish('state', state);
+            } catch(e){ console.warn('state publish err', e); }
         }
     }, 100); // 10Hz
 }
@@ -609,23 +638,25 @@ function worldToScreen(worldPos, scene, camera, engine) {
     return { x: transform.x, y: transform.y };
 }
 
-// start everything (load firebase then start state loop)
+// start everything (load Ably then start networking)
 function startNetworking(){
-    if (!FIREBASE_CONFIG || !FIREBASE_CONFIG.projectId) {
-        console.warn('Firebase config missing: paste your Firebase config into interaction.js FIREBASE_CONFIG');
-        // still start state loop so local sends can be used if DataChannels exist via direct peer connections (unlikely without signalling)
+    if (!ABLY_API_KEY) {
+        console.warn('Ably API key missing: paste your Ably API key into interaction.js ABLY_API_KEY');
         startStateLoop();
         return;
     }
-    loadFirebaseAndInit(function(err){
-        if (err) { console.warn('Firebase load failed, starting state loop only'); startStateLoop(); return; }
-        startStateLoop();
+    loadAblyAndInit(function(err){
+        if (err) { console.warn('Ably load failed, starting state loop only'); startStateLoop(); return; }
     });
 }
 
-// start networking after a short delay if we have a username
-if (shouldAutoStart) {
+// Initialize game with stored username or show login
+if (username) {
+    clientId = username;
+    loginOverlay.style.display = 'none';
     setTimeout(startNetworking, 1000);
+} else {
+    loginOverlay.style.display = 'flex';
 }
 
 
