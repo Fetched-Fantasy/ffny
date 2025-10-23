@@ -49,7 +49,6 @@ body#interaction-page {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Softer shadow */
     position: relative; /* For search input positioning and top-right-buttons */
     bottom: 0px;
- height:120px;
 }
 
 h1,
@@ -542,7 +541,37 @@ body#interaction-page .fill-screen-canvas {
  left: 0;
  width: 100%;
   top: 0px;
-  height: calc(100vh - 120px); /* Subtract header height */
+  height: 100vh; /* Subtract header height */
   background-color: transparent;
+}
+
+/* Toast notification styles */
+.toast-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #ff3333;
+    color: white;
+    padding: 16px 24px;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    display: none;
+    z-index: 1000;
+    animation: slideIn 0.5s ease-in-out;
+}
+
+.toast-notification.show {
+    display: block;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
