@@ -536,3 +536,10 @@ footer {
   display: flex;
 }
 
+body#interaction-page .fill-screen-canvas {
+ position: absolute;
+ left: 0;
+ width: 100%;
+  top: 150px;
+  height: calc(100vh - 150px); /* Subtract header height */
+}

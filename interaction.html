@@ -17,7 +17,7 @@
     <link rel="icon" href="https://raw.githubusercontent.com/Fetched-Fantasy/ffny/refs/heads/main/Copilot_20250903_093151.png" type="image/x-icon">
     <title>Interaction Page</title>
 </head>
-<body>
+<body id="interaction-page">
     <div class="container">
         <h1>Interaction Page</h1>
         <p>This is the interaction page.</p>
@@ -25,8 +25,8 @@
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script>
         var canvas = document.createElement('canvas');
-        canvas.style.width = '100%';
-        canvas.style.height = '400px';
+        canvas.className = "fill-screen-canvas";
+        
         document.querySelector('.container').appendChild(canvas);
         var engine = new BABYLON.Engine(canvas, true);
 
