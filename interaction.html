@@ -55,6 +55,17 @@
         </div>
     </div>
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <!-- Login Modal -->
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-modal">
+            <h2>Enter Your Username</h2>
+            <div class="login-form">
+                <input type="text" id="usernameInput" placeholder="Username" maxlength="20">
+                <button id="loginButton" class="btn btn-primary">Join Game</button>
+                <p id="loginError" class="login-error"></p>
+            </div>
+        </div>
+    </div>
     <div class="game-container">
         <div class="game-header"><div class="game-badge">Beta</div></div>
         <div id="game-root"></div>

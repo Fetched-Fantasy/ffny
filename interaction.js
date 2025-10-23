@@ -163,7 +163,8 @@ var ROOM_ID = (function(){
 })();
 
 // runtime state
-var clientId = hex8();
+var username = localStorage.getItem('ffny.username') || '';
+var clientId = username || hex8(); // use username if available, otherwise random
 var peers = {}; // remoteId => { pc, dc, buffer: [{t,pos,rot}], mesh }
 var firestore = null;
 var signalsRef = null;
@@ -173,6 +174,58 @@ var joined = false;
 var STATE_TTL_MS = 30000; // 30 seconds
 // HUD / presence UI
 var hud = null;
+
+// Login handling
+var loginOverlay = document.getElementById('loginOverlay');
+var usernameInput = document.getElementById('usernameInput');
+var loginButton = document.getElementById('loginButton');
+var loginError = document.getElementById('loginError');
+
+function handleLogin() {
+    var newUsername = usernameInput.value.trim();
+    if (!newUsername) {
+        loginError.textContent = 'Please enter a username';
+        return;
+    }
+    if (newUsername.length < 3) {
+        loginError.textContent = 'Username must be at least 3 characters';
+        return;
+    }
+    if (newUsername.length > 20) {
+        loginError.textContent = 'Username must be less than 20 characters';
+        return;
+    }
+    // Store username
+    localStorage.setItem('ffny.username', newUsername);
+    username = newUsername;
+    clientId = username;
+    // Hide login
+    loginOverlay.style.display = 'none';
+    // Start game networking
+    startNetworking();
+}
+
+if (loginButton) {
+    loginButton.addEventListener('click', handleLogin);
+}
+
+if (usernameInput) {
+    usernameInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            handleLogin();
+        }
+    });
+    // Pre-fill username if available
+    if (username) {
+        usernameInput.value = username;
+    }
+}
+
+// Don't auto-start networking, wait for login
+var shouldAutoStart = !!username;
+if (shouldAutoStart) {
+    loginOverlay.style.display = 'none';
+}
 
 // helper: small random id
 function hex8(){
@@ -422,6 +475,7 @@ function createRemoteAvatarMesh(id){
     // create a DOM label for the avatar
     var label = document.createElement('div');
     label.className = 'ffny-remote-label';
+    // Use id as username since we're now storing usernames as clientId
     label.textContent = id;
     label.style.position = 'fixed';
     label.style.transform = 'translate(-50%, -120%)';
@@ -569,8 +623,10 @@ function startNetworking(){
     });
 }
 
-// start networking after a short delay so the scene is ready
-setTimeout(startNetworking, 1000);
+// start networking after a short delay if we have a username
+if (shouldAutoStart) {
+    setTimeout(startNetworking, 1000);
+}
 
 
 // Pause menu logic
