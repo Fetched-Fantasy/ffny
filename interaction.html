@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:title" content="Interaction">
-    <meta property="og:description" content="This is the interaction page.">
-    <meta property="og:image" content="">
-    <meta property="og:url" content="">
-    <meta property="og:type" content="website">
+  <meta property="og:title" content="Fetched Fantasy Interactable Page">
+  <meta property="og:description" content="This page is an interactable one!">
+  <meta property="og:image" content="https://raw.githubusercontent.com/Fetched-Fantasy/ffny/refs/heads/main/Copilot_20250903_093151.png">
+  <meta property="og:url" content="https://ffny.pages.dev/interaction">
+  <meta property="og:type" content="website">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-BY4KC1P2F8"></script>
     <script>
@@ -33,15 +31,31 @@
 
         var createScene = function () {
             var scene = new BABYLON.Scene(engine);
-            var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 10, new BABYLON.Vector3(0, 0, 0), scene);
-            camera.setPosition(new BABYLON.Vector3(0, 5, -10));
-            camera.attachControl(canvas, true);
-            var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-            var box = BABYLON.MeshBuilder.CreateBox("box", {size: 2}, scene);
+        scene.gravity = new BABYLON.Vector3(0, -0.9, 0);
+        scene.collisionsEnabled = true;
+        var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
+        camera.setTarget(BABYLON.Vector3.Zero());
+        camera.attachControl(canvas, true);
+        camera.applyGravity = true;
+        camera.checkCollisions = true;
+        camera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
+        camera.speed = 0.2;
 
-            scene.onBeforeRenderObservable.add(() => {
-                box.rotation.y += 0.01;
-            });
+        // WASD controls
+        camera.keysUp = [87]; // W
+        camera.keysDown = [83]; // S
+        camera.keysLeft = [65]; // A
+        camera.keysRight = [68]; // D
+
+        var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+        light.intensity = 0.7;
+
+        var material = new BABYLON.StandardMaterial("groundMaterial", scene);
+        material.diffuseColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+        material.specularColor = new BABYLON.Color3(0, 0, 0);
+        var ground = BABYLON.MeshBuilder.CreateGround("ground1", { width: 20, height: 20, subdivisions: 2 }, scene);
+        ground.material = material;
+        ground.checkCollisions = true;
 
             return scene;
         };
