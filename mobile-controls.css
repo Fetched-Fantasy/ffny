@@ -1,0 +1,53 @@
+.mobile-controls {
+    display: none; /* Hidden by default, shown on mobile */
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+
+.mobile-controls-wrapper {
+    display: grid;
+    grid-template-areas:
+        ". up ."
+        "left down right";
+    gap: 10px;
+}
+
+.mobile-button {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.mobile-button:active {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.mobile-button.up { grid-area: up; }
+.mobile-button.down { grid-area: down; }
+.mobile-button.left { grid-area: left; }
+.mobile-button.right { grid-area: right; }
+
+/* Show controls on mobile devices */
+@media (max-width: 768px) {
+    .mobile-controls {
+        display: block;
+    }
+    
+    /* Add some padding to the bottom of the canvas to make room for controls */
+    .game-canvas {
+        margin-bottom: 160px;
+    }
+}

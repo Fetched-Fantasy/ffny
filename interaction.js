@@ -13,6 +13,27 @@ if (gameRoot) {
   gameRoot.appendChild(canvas);
 }
 
+// Create mobile controls
+var mobileControls = document.createElement('div');
+mobileControls.className = 'mobile-controls';
+mobileControls.innerHTML = `
+  <div class="mobile-controls-wrapper">
+    <button class="mobile-button up">⬆</button>
+    <button class="mobile-button left">⬅</button>
+    <button class="mobile-button down">⬇</button>
+    <button class="mobile-button right">➡</button>
+  </div>
+`;
+document.body.appendChild(mobileControls);
+
+// Mobile controls state
+var mobileButtonStates = {
+    up: false,
+    down: false,
+    left: false,
+    right: false
+};
+
 // Babylon engine and scene
 var engine = new BABYLON.Engine(canvas, true);
 
@@ -40,6 +61,58 @@ var createScene = function () {
     camera.keysDown = [83]; // S
     camera.keysLeft = [65]; // A
     camera.keysRight = [68]; // D
+
+    // Setup mobile controls
+    var mobileButtons = mobileControls.querySelectorAll('.mobile-button');
+    mobileButtons.forEach(function(button) {
+        var direction = button.className.split(' ')[1]; // up, down, left, or right
+        
+        // Touch events
+        button.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            mobileButtonStates[direction] = true;
+            switch(direction) {
+                case 'up': camera._keys[87] = true; break; // W
+                case 'down': camera._keys[83] = true; break; // S
+                case 'left': camera._keys[65] = true; break; // A
+                case 'right': camera._keys[68] = true; break; // D
+            }
+        }, false);
+        
+        button.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            mobileButtonStates[direction] = false;
+            switch(direction) {
+                case 'up': camera._keys[87] = false; break;
+                case 'down': camera._keys[83] = false; break;
+                case 'left': camera._keys[65] = false; break;
+                case 'right': camera._keys[68] = false; break;
+            }
+        }, false);
+
+        // Mouse events for testing on desktop
+        button.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            mobileButtonStates[direction] = true;
+            switch(direction) {
+                case 'up': camera._keys[87] = true; break;
+                case 'down': camera._keys[83] = true; break;
+                case 'left': camera._keys[65] = true; break;
+                case 'right': camera._keys[68] = true; break;
+            }
+        });
+        
+        button.addEventListener('mouseup', function(e) {
+            e.preventDefault();
+            mobileButtonStates[direction] = false;
+            switch(direction) {
+                case 'up': camera._keys[87] = false; break;
+                case 'down': camera._keys[83] = false; break;
+                case 'left': camera._keys[65] = false; break;
+                case 'right': camera._keys[68] = false; break;
+            }
+        });
+    });
 
     var light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, 0), scene);
     light.intensity = 0.7;
