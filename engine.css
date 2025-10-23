@@ -28,7 +28,11 @@
 .object-list {
     max-height: 200px;
     overflow-y: auto;
-    margin-bottom: 10px;
+    /*margin-bottom: 10px;*/
+    margin-left: -10px; /* Add a negative margin to shift left */
+    /*padding-left: 0px;*/
+    /*width: 100%;*/
+    margin-top: 20px
 }
 .object-item {
     display: flex;
@@ -86,4 +90,8 @@
     width: 100%;
     height: calc(100vh - 180px); /* leave room for asset browser */
     display: block;
+}
+
+.editor-section #properties {
+ margin-top: 20px; /* Add margin to the top */
 }
