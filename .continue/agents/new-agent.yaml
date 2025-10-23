@@ -6,7 +6,7 @@ models:
   - name: Gemini 2.5 Pro
     provider: gemini
     model: gemini-2.5-pro
-    apiKey: ${{ inputs.AIzaSyBBh97ka2AYNnQBavZL7vOpQOuo-vtH21c }}
+    apiKey: AIzaSyBiFA9y84CxLSMH55o6Kb32B6soCL8_jto
     roles:
       - chat
       - edit
