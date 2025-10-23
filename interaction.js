@@ -96,6 +96,8 @@ var firestore = null;
 var signalsRef = null;
 var statesRef = null;
 var joined = false;
+// State TTL (milliseconds) - used to set expiresAt for Firestore TTL policy and stale cleanup
+var STATE_TTL_MS = 30000; // 30 seconds
 // HUD / presence UI
 var hud = null;
 
@@ -296,9 +298,27 @@ function removePeer(remoteId){
     try { if (p.pc) p.pc.close(); } catch(e){}
     if (p.mesh) {
         try { p.mesh.dispose(); } catch(e){}
+        // remove label DOM if present
+        try { if (p.mesh._ffnyLabel && p.mesh._ffnyLabel.parentNode) p.mesh._ffnyLabel.parentNode.removeChild(p.mesh._ffnyLabel); } catch(e){}
     }
     delete peers[remoteId];
 }
+
+// Attempt to clean up our state doc and notify peers when the page is closed or hidden
+function cleanupOnUnload(){
+    try {
+        if (statesRef) {
+            statesRef.doc(clientId).delete().catch(function(){});
+        }
+        if (signalsRef) {
+            signalsRef.add({ type: 'leave', from: clientId, t: Date.now(), to: null }).catch(function(){});
+        }
+    } catch(e){}
+}
+
+window.addEventListener('beforeunload', function(){ cleanupOnUnload(); });
+// visibilitychange can help when tab is closed in some browsers
+document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'hidden') cleanupOnUnload(); });
 
 // handle incoming remote state (from DataChannel or Firestore fallback)
 function handleRemoteState(state, fromId){
@@ -400,7 +420,8 @@ function startStateLoop(){
         // fallback relay via Firestore at low rate: update a per-client doc instead of adding many small documents
         if (USE_FIRESTORE_FALLBACK && statesRef) {
             try {
-                statesRef.doc(clientId).set({ state: state, t: Date.now() }).catch(function(err){
+                var expiresAt = new Date(Date.now() + STATE_TTL_MS);
+                statesRef.doc(clientId).set({ state: state, t: Date.now(), expiresAt: expiresAt }).catch(function(err){
                     console.warn('Failed to write state doc', err);
                 });
             } catch(e){ console.warn('statesRef set err', e); }
