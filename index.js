@@ -1,18 +1,11 @@
-const navContainer = document.querySelector(".nav-container");
-
-hamburger.addEventListener('click', () => {
- navContainer.classList.toggle('nav-active');
-});
-
-// index.js
-
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize CacheP2P
   const cacheP2P = new CacheP2P();
 
   // Start CacheP2P
   cacheP2P.start({
-    assets: ['changelog.json']
+    assets: ['changelog.json'],
+    params: {}
   });
 
   const changeLogList = document.getElementById('change-log-list');
@@ -49,4 +42,3 @@ document.addEventListener('DOMContentLoaded', function() {
       changeLogList.innerHTML = `<p>Failed to load change log: ${error.message}</p>`; // Added error message
     });
 });
-
