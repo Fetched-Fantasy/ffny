@@ -3,23 +3,24 @@ document.addEventListener('DOMContentLoaded', function() {
   const messageInput = document.getElementById('message-input');
   const chatDisplay = document.getElementById('chat-display');
 
-  // Mock Socket.IO client-side
-  const socket = {
-    emit: function(event, data) {
-      // In a real implementation, this would send the data to the server
-      console.log(`Emitting ${event} with data:`, data);
+  // --- REPLACE MOCK SOCKET WITH ABLY ---
+  const ably = new Ably.Realtime('XRHh7Q.AYC1KA:pl1HM7BjoJeiHQh1xF2kSShs5Tfy1OKjb1spOnQIQKQ'); // Replace with your Ably API Key
+  const channel = ably.channels.get('ffny-chat'); // Channel name
 
-      // Mock receiving the message (for demonstration purposes)
-      const messageElement = document.createElement('div');
-      messageElement.textContent = data.message;
-      chatDisplay.appendChild(messageElement);
-    }
-  };
+  // Subscribe to the channel
+  channel.subscribe('message', function (msg) {
+    const messageElement = document.createElement('div');
+    messageElement.textContent = msg.data.text;
+    chatDisplay.appendChild(messageElement);
+  });
+  // -------------------------------------
 
   sendButton.addEventListener('click', function() {
     const message = messageInput.value;
     if (message) {
-      socket.emit('chat message', { message: message });
+      // --- PUBLISH TO ABLY INSTEAD OF EMITTING ---
+      channel.publish('message', { text: message });
+      // -------------------------------------------
       messageInput.value = ''; // Clear the input
     }
   });

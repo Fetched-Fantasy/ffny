@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+        <div id="admin-chat-display" class="mb-3">
+            <!-- Messages will load here -->
+        </div>
+
+    <script>
+    // Get a reference to the chat display
+    const chatDisplay = document.getElementById('admin-chat-display');
+    // Initialize Ably
+    const ably = new Ably.Realtime('XRHh7Q.AYC1KA:pl1HM7BjoJeiHQh1xF2kSShs5Tfy1OKjb1spOnQIQKQ');
+    // Get the channel
+    const channel = ably.channels.get('ffny-chat');
+
+    // Subscribe to messages on the channel
+    channel.subscribe('message', function (message) {
+      // Extract data from the message
+      const messageText = message.data.text;
+
+      // Create a new div element
+      const messageElement = document.createElement('div');
+
+      // Set the text content of the message element
+      messageElement.textContent = messageText;
+      // Append the message element to the chat display
+      chatDisplay.appendChild(messageElement);
+    });
+    </script>
+    </div>
+</body>
+</html>
