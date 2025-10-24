@@ -4,11 +4,10 @@
     <title>Basic Video Editor</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        video { width: 80%; }
-    </style>
+    <link rel="stylesheet" href="editor.css">
 </head>
-<body>
+<body style = "display: flex;">
+   <div style = "width: 50%;">
     <input type="file" id="videoUpload" accept="video/*">
     <video id="videoPlayer" controls>
         <source src="" type="video/mp4">
@@ -20,25 +19,16 @@
         <button id="pauseButton">Pause</button>
     </div>
 
-    <script>
-        const videoUpload = document.getElementById('videoUpload');
-        const videoPlayer = document.getElementById('videoPlayer');
-        const playButton = document.getElementById('playButton');
-        const pauseButton = document.getElementById('pauseButton');
+    <input type="range" id="timeline" min="0" value="0" step="0.01">
 
-        videoUpload.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            const url = URL.createObjectURL(file);
-            videoPlayer.src = url;
-        });
+    </div>
 
-        playButton.addEventListener('click', function() {
-            videoPlayer.play();
-        });
-
-        pauseButton.addEventListener('click', function() {
-            videoPlayer.pause();
-        });
-    </script>
+ <div style = "width: 50%;">
+        <h3>Assets</h3>
+        <div id = "assetBrowser">
+         
+        </div>
+  </div>
+    <script src="editor.js"></script>
 </body>
 </html>
