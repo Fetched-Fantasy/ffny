@@ -38,6 +38,21 @@
                     <li class="nav-item"><a class="nav-link" href="https://ffnystatus.statuspage.io/">Status</a></li>
         </div>
         <div class="container">
+            <!-- Chat Servers List -->
+            <div class="chat-servers" style="margin-bottom:15px;">
+                <h5>Available Chat Servers</h5>
+                <ul id="chat-server-list" style="list-style: none; padding-left: 0;">
+                    <li>General Chat</li>
+                    <!-- Add more chat servers here -->
+                </ul>
+                <div class="input-group">
+                    <input type="text" id="new-server-name" class="form-control" placeholder="New server name">
+                    <div class="input-group-append">
+                        <button id="create-server-button" class="btn btn-success">Create</button>
+                    </div>
+                </div>
+            </div>
+
             <div id="chat-display" class="mb-3"></div>
             <div class="input-group">
                 <input type="text" id="message-input" class="form-control">
