@@ -1,0 +1,14 @@
+/* chat.css */
+
+.chat-servers {
+    margin-bottom: 15px;
+}
+
+.chat-servers h5 {
+  color: #dcddde; /* Discord Light Gray */
+}
+
+.chat-servers ul {
+    list-style: none;
+    padding-left: 0;
+}
