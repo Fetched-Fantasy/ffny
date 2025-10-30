@@ -161,6 +161,17 @@
     <div id="offlineToast" class="toast-notification">
         <span id="offlineToastMessage"></span>
     </div>
+    <script>
+        document.body.addEventListener('click', function() {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+                });
+            }
+        });
+    </script>
 </body>
 </html>
 
