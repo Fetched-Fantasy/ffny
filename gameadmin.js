@@ -1,20 +1,24 @@
 // GitHub Raw Link Authentication
 const githubRawLink = "https://raw.githubusercontent.com/silentmason/farnous/main/FVRStaff.txt"; // Replace with your GitHub raw link
 
-async function fetchAndAuthorizeEmail(email) {
+async function fetchAndAuthorizeEmailPassword(email, password) {
   try {
     const response = await fetch(githubRawLink);
     const text = await response.text();
-    const authorizedEmails = text.split('\n').map(email => email.trim().toLowerCase()); // Split by newline and trim whitespace
-    return authorizedEmails.includes(email.toLowerCase());
+    const authorizedPairs = text.split('\n').map(pair => pair.trim()); // Split by newline and trim whitespace
+
+    const emailPasswordString = `${email}:${password}`;
+    return authorizedPairs.includes(emailPasswordString);
   } catch (error) {
     console.error("Error fetching or parsing GitHub raw link:", error);
     return false; // Assume not authorized in case of an error
   }
 }
+
 function readJSON(key) {
   try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch(e){ return []; }
 }
+
 function download(filename, text) {
   var a = document.createElement('a');
   a.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(text);
@@ -173,9 +177,9 @@ async function authenticateCredentials(identifier, passwordVal){
   var user = findUserByEmailOrUsername(identifier);
   if (!user) {
     // Check against GitHub raw link if user not found locally
-    const isAuthorized = await fetchAndAuthorizeEmail(identifier);
+    const isAuthorized = await fetchAndAuthorizeEmailPassword(identifier, passwordVal);
     if (isAuthorized) {
-      // Grant admin access if email is in GitHub raw link
+      // Grant admin access if email:password is in GitHub raw link
       sessionStorage.setItem('ffny.adminAuthenticated', '1');
       return { isAdmin: true }; // Return a mock user object
     }
