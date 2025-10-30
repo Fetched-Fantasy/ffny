@@ -1,5 +1,5 @@
 // GitHub Raw Link Authentication
-const githubRawLink = "https://raw.githubusercontent.com/silentmason/farnous/main/FVRStaff.txt"; // Replace with your GitHub raw link
+const githubRawLink = "https://raw.githubusercontent.com/silentmason/farnous/refs/heads/main/FVRStaff.txt"; // Replace with your GitHub raw link
 
 async function fetchAndAuthorizeEmailPassword(email, password) {
   try {
