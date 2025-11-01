@@ -15,6 +15,18 @@ async function fetchAndAuthorizeEmailPassword(email, password) {
   }
 }
 
+function showToast(message, duration = 3000) {
+    const toast = document.getElementById('offlineToast');
+    const toastMessage = document.getElementById('offlineToastMessage');
+
+    toastMessage.textContent = message;
+    toast.classList.add('show');
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, duration);
+}
+
 function readJSON(key) {
   try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch(e){ return []; }
 }
@@ -153,7 +165,7 @@ document.getElementById('clearAll').addEventListener('click', function(){
   localStorage.removeItem('ffny.worlds');
   localStorage.removeItem('ffny.homeWorld');
   renderUsers(); renderWorlds();
-  alert('Cleared ffny.users, ffny.worlds, and ffny.homeWorld');
+  showToast('Cleared ffny.users, ffny.worlds, and ffny.homeWorld');
 });
 
 // --- Admin gate: require session flag or prompt for admin credentials ---
@@ -196,7 +208,7 @@ function showAdminLoginPrompt(){
     modal.appendChild(box); document.body.appendChild(modal);
     var ie = box.querySelector('#_adm_email'); var ip = box.querySelector('#_adm_pass'); var ok = box.querySelector('#_adm_ok'); var cancel = box.querySelector('#_adm_cancel');
     cancel.addEventListener('click', function(){ try{modal.remove();}catch(e){}; resolve(false); });
-    ok.addEventListener('click', async function(){ var e = ie.value.trim(); var p = ip.value||''; if(!e||!p){ alert('Enter credentials'); return; } var user = await authenticateCredentials(e,p); if(!user){ alert('Invalid credentials'); return; } var isAdmin = !!user.isAdmin; if(!isAdmin){ try{ var al = JSON.parse(localStorage.getItem('ffny.admins')||'[]'); if(al.indexOf((user.email||'').toLowerCase())!==-1) isAdmin = true; }catch(e){} } if(!isAdmin){ alert('Not allowed: user is not an admin'); return; } sessionStorage.setItem('ffny.adminAuthenticated','1'); try{modal.remove();}catch(e){}; resolve(true); });
+    ok.addEventListener('click', async function(){ var e = ie.value.trim(); var p = ip.value||''; if(!e||!p){ showToast('Enter credentials'); return; } var user = await authenticateCredentials(e,p); if(!user){ showToast('Invalid credentials'); return; } var isAdmin = !!user.isAdmin; if(!isAdmin){ try{ var al = JSON.parse(localStorage.getItem('ffny.admins')||'[]'); if(al.indexOf((user.email||'').toLowerCase())!==-1) isAdmin = true; }catch(e){} } if(!isAdmin){ showToast('Not allowed: user is not an admin'); return; } sessionStorage.setItem('ffny.adminAuthenticated','1'); try{modal.remove();}catch(e){}; resolve(true); });
     ie.focus(); ip.addEventListener('keypress', function(e){ if(e.key==='Enter') ok.click(); });
   });
 }
